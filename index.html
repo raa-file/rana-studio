@@ -414,8 +414,8 @@ tbody tr:hover{background:var(--surface-2)}
    ضعي هنا رابط مشروعك ومفتاح anon public من Supabase → Project Settings → API
    حتى يعمل الربط تلقائيًا على كل الأجهزة. المفتاح العام آمن في الواجهة لأن الحماية بسياسات RLS.
    لا تضعي مفتاح service_role هنا أبدًا. */
-const SUPABASE_URL = '';
-const SUPABASE_ANON_KEY = '';
+const SUPABASE_URL = 'https://rgqyldvplmtqcfbkdegj.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJncXlsZHZwbG10cWNmYmtkZWdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI4NzE2NTEsImV4cCI6MjEwODQ0NzY1MX0.0hKbPLYzZt1McgqM6a9K-4-bbe8UbvO1XY8w0uc8RU4';
 
 /* ========== Constants ========== */
 const STORE_KEY = 'ranastudio.v1';
@@ -1681,8 +1681,7 @@ function viewSyncSettings(){
   const steps = '<ol class="steps"><li>أنشئي مشروعًا مجانيًا في supabase.com.</li><li>من SQL Editor شغّلي ملف <span class="ltr">rana-studio-setup.sql</span>.</li><li>من Authentication ← Users أضيفي مستخدمًا ببريدك وكلمة مرور (Auto Confirm).</li><li>من Authentication ← Sign In / Providers أوقفي «Allow new users to sign up».</li><li>من Project Settings ← API انسخي Project URL ومفتاح anon public والصقيهما هنا.</li></ol>';
   let body;
   if(!c.url || !c.key || (ui.editSyncConfig && !c.fixed)){
-    body = '<p class="small">اربطي التطبيق بمشروع Supabase لتظهر نفس البيانات على الجوال واللاب توب.</p>'+steps+
-      '<form class="form" id="sync-config-form" novalidate style="margin-top:6px">'+
+    body = '<form class="form" id="sync-config-form" novalidate>'+
         '<div class="field"><label for="s-url">Project URL</label><input id="s-url" name="url" dir="ltr" inputmode="url" placeholder="https://xxxx.supabase.co" value="'+esc(c.url)+'"></div>'+
         '<div class="field"><label for="s-key">anon public key</label><input id="s-key" name="key" dir="ltr" autocomplete="off" value="'+esc(c.key)+'"></div>'+
         '<div class="row"><button class="btn primary" type="submit">حفظ وربط</button>'+(ui.editSyncConfig?'<button class="btn" type="button" data-act="sync-cancel-config">إلغاء</button>':'')+'</div>'+
