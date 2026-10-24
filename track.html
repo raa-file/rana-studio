@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>متابعة طلبك | Rana Studio</title>
+<meta name="theme-color" content="#F4FAFE">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<link rel="apple-touch-icon" href="rs-apple-touch-icon.png?v=1">
+<link rel="icon" type="image/png" href="rs-icon-192.png?v=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&family=Poppins:wght@400&display=swap">
+<style>
+/* Layout: one centered column — brand, project card with progress stepper, revisions, links */
+:root{
+  --bg:#F4FAFE; --surface:#FFFFFF; --surface-2:#F7FBFE; --ink:#1A2533; --muted:#6B7C8F; --line:#DCEAF5;
+  --blue:#1D4FB0; --sky:#3AA8E0; --accent:#1F5FBF; --accent-soft:#E6F2FC;
+  --ok:#1F7A4A; --ok-soft:#E3F4EA; --warn:#9A5B00; --warn-soft:#FFF2DC; --muted-soft:#EEF2F6;
+  --font:"Readex Pro",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif; --latin:"Poppins",system-ui,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0F1722; --surface:#16202D; --surface-2:#1B2735; --ink:#E6EEF6; --muted:#97A8BA; --line:#273546;
+    --blue:#8DB8FF; --sky:#7FD0F5; --accent:#7DB8F5; --accent-soft:#1B2E45;
+    --ok:#7FD3A3; --ok-soft:#183324; --warn:#F2B65C; --warn-soft:#3A2D17; --muted-soft:#1E2A38;
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.65}
+.wrap{max-width:560px;margin:0 auto;padding:calc(24px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(40px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:16px}
+.brand{display:flex;flex-direction:column;align-items:center;gap:3px;margin-bottom:6px}
+.brand b{font-weight:700;font-size:24px;line-height:1.3;direction:ltr}
+.brand .r1{color:var(--blue)} .brand .r2{color:var(--sky)}
+.brand small{font-family:var(--latin);font-size:9px;letter-spacing:.26em;color:var(--muted);direction:ltr}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px}
+.hello{color:var(--muted);font-size:14px;margin:0}
+h1{font-size:22px;line-height:1.4;margin:2px 0 4px;text-wrap:balance}
+.svc{color:var(--muted);font-size:13px}
+.now{margin-top:14px;padding:12px 14px;border-radius:14px;background:var(--accent-soft);display:flex;gap:10px;align-items:flex-start}
+.now .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);margin-top:8px;flex:0 0 10px;box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 22%,transparent)}
+.now b{display:block;font-size:16px}
+.now span{font-size:13.5px;color:var(--muted)}
+.now.done{background:var(--ok-soft)} .now.done .dot{background:var(--ok);box-shadow:0 0 0 4px color-mix(in srgb,var(--ok) 22%,transparent)}
+.now.waiting{background:var(--warn-soft)} .now.waiting .dot{background:var(--warn);box-shadow:0 0 0 4px color-mix(in srgb,var(--warn) 22%,transparent)}
+.now.cancelled{background:var(--muted-soft)} .now.cancelled .dot{background:var(--muted);box-shadow:none}
+.steps{list-style:none;margin:18px 0 0;padding:0;display:flex;flex-direction:column}
+.steps li{position:relative;display:flex;gap:12px;align-items:flex-start;padding-bottom:16px}
+.steps li:last-child{padding-bottom:0}
+.steps li::after{content:"";position:absolute;right:11px;top:26px;bottom:2px;width:2px;background:var(--line)}
+.steps li:last-child::after{display:none}
+.steps li.past::after{background:var(--sky)}
+.bul{width:24px;height:24px;flex:0 0 24px;border-radius:50%;border:2px solid var(--line);background:var(--surface);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--surface);position:relative;z-index:1}
+.past .bul{background:var(--sky);border-color:var(--sky)}
+.cur .bul{background:var(--accent);border-color:var(--accent)}
+.steps .t{font-size:14.5px;color:var(--muted);padding-top:1px}
+.past .t{color:var(--ink)} .cur .t{color:var(--ink);font-weight:700}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px;padding-top:14px;border-top:1px solid var(--line)}
+.facts .k{font-size:12px;color:var(--muted);display:block}
+.facts .v{font-weight:600;font-variant-numeric:tabular-nums}
+h2{font-size:16px;margin:0 0 10px}
+.rev{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--line)}
+.rev:last-child{border-bottom:0;padding-bottom:0}
+.rev .n{font-size:12px;color:var(--muted);flex:0 0 auto;padding-top:2px;min-width:52px}
+.rev p{margin:0;flex:1;min-width:0;overflow-wrap:anywhere;white-space:pre-wrap}
+.pill{font-size:12px;font-weight:600;padding:2px 10px;border-radius:999px;white-space:nowrap;background:var(--muted-soft);color:var(--muted)}
+.pill.work{background:var(--warn-soft);color:var(--warn)} .pill.ok{background:var(--ok-soft);color:var(--ok)} .pill.sent{background:var(--accent-soft);color:var(--accent)}
+.links{display:flex;flex-direction:column;gap:8px}
+.links a{display:flex;flex-direction:column;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface-2);text-decoration:none;color:var(--ink);min-width:0}
+.links a b{font-size:14px}
+.links a span{font-size:12.5px;color:var(--accent);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:ltr;text-align:right}
+.foot{text-align:center;color:var(--muted);font-size:12.5px}
+.msg{text-align:center;padding:30px 18px}
+.msg b{display:block;font-size:17px;margin-bottom:6px}
+.msg p{margin:0;color:var(--muted)}
+.skel{height:14px;border-radius:7px;background:var(--line);margin:10px 0;animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.5}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+.refresh{background:none;border:0;color:var(--accent);font:inherit;font-size:13px;cursor:pointer;padding:4px}
+</style>
+</head>
+<body>
+<main class="wrap" id="app">
+  <div class="brand"><b><span class="r1">Rana</span> <span class="r2">Studio</span></b><small>GRAPHIC DESIGN</small></div>
+  <div class="card" aria-busy="true"><div class="skel" style="width:40%"></div><div class="skel" style="width:75%;height:20px"></div><div class="skel"></div><div class="skel" style="width:60%"></div></div>
+</main>
+<script>
+'use strict';
+/* Client-facing order tracker. The link carries: #<share token>~<supabase project ref>~<public anon key>.
+   It calls a single read-only database function that returns one order's public fields only. */
+const STEPS = [
+  {key:'new', label:'استلام الطلب'},
+  {key:'progress', label:'العمل على التصميم'},
+  {key:'review', label:'المعاينة والمراجعة'},
+  {key:'revisions', label:'تنفيذ التعديلات'},
+  {key:'ready', label:'جاهز للتسليم'},
+  {key:'done', label:'تم التسليم'}
+];
+const STEP_OF = {new:0, progress:1, preview:2, reply:2, revisions:3, ready:4, done:5};
+const NOW = {
+  new:['استلمنا طلبك','نراجع التفاصيل ونبدأ قريبًا.',''],
+  progress:['نعمل على طلبك الآن','نشتغل على التصميم، وراح نرسل لك المعاينة أول ما تجهز.',''],
+  preview:['المعاينة جاهزة لك','اطّلعي عليها وشاركينا رأيك.','waiting'],
+  reply:['بانتظار ردّك','أرسلنا لك رسالة ونستنى ردّك عشان نكمل.','waiting'],
+  revisions:['نعمل على التعديلات','نطبّق التعديلات اللي طلبتيها.',''],
+  ready:['طلبك جاهز للتسليم','باقي خطوة التسليم النهائي.',''],
+  done:['تم تسليم طلبك','شكرًا لثقتك 🌷','done'],
+  cancelled:['الطلب ملغي','للاستفسار تواصلي معنا.','cancelled']
+};
+const REV = {new:['جديد',''], progress:['قيد التنفيذ','work'], done:['تم التنفيذ','ok'], sent:['أُرسل لك','sent'], approved:['تمت الموافقة','ok']};
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const LOC = 'ar-u-ca-gregory-nu-latn';
+const fmtD = s => s ? new Intl.DateTimeFormat(LOC,{weekday:'long',day:'numeric',month:'long'}).format(new Date(s+'T00:00:00')) : '';
+const fmtT = s => s ? new Intl.DateTimeFormat(LOC,{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}).format(new Date(s)) : '';
+const BRAND = '<div class="brand"><b><span class="r1">Rana</span> <span class="r2">Studio</span></b><small>GRAPHIC DESIGN</small></div>';
+const app = document.getElementById('app');
+
+function parseLink(){
+  const parts = location.hash.replace(/^#/,'').split('~');
+  if(parts.length < 3 || parts[0].length < 20) return null;
+  const where = decodeURIComponent(parts[1]);
+  const url = where.startsWith('u:') ? decodeURIComponent(where.slice(2)) : 'https://' + where + '.supabase.co';
+  if(!/^https:\/\/[^/\s]+$/.test(url)) return null;
+  return {token: parts[0], url, key: parts.slice(2).join('~')};
+}
+function message(title, text){ app.innerHTML = BRAND + '<div class="card msg"><b>'+esc(title)+'</b><p>'+esc(text)+'</p></div>'; }
+function parseLinks(v){
+  v = String(v||'').trim(); if(!v) return [];
+  if(v[0]==='['){ try{ const a = JSON.parse(v); if(Array.isArray(a)) return a.filter(x=>x && /^https?:\/\//i.test(x.url)); }catch(e){} }
+  return /^https?:\/\//i.test(v) ? [{label:'', url:v}] : [];
+}
+function render(o){
+  const st = o.status, idx = st==='cancelled' ? -1 : (STEP_OF[st] ?? 0);
+  const [nowT, nowS, nowC] = NOW[st] || NOW.new;
+  const revs = Array.isArray(o.revisions) ? o.revisions : [];
+  const links = parseLinks(o.links);
+  const first = String(o.client||'').trim().split(/\s+/)[0];
+  const dueTxt = st==='done' ? (o.completed_at ? fmtD(o.completed_at) : '') : (o.due ? fmtD(o.due) : '');
+  document.title = o.title + ' | Rana Studio';
+  app.innerHTML = BRAND +
+    '<section class="card">'+
+      (first ? '<p class="hello">أهلًا '+esc(first)+'، هذي حالة طلبك</p>' : '')+
+      '<h1>'+esc(o.title)+'</h1>'+(o.service?'<span class="svc">'+esc(o.service)+'</span>':'')+
+      '<div class="now '+nowC+'"><span class="dot"></span><div><b>'+nowT+'</b><span>'+nowS+'</span></div></div>'+
+      (st==='cancelled' ? '' : '<ol class="steps">'+STEPS.map((s,i)=>'<li class="'+(i<idx||(i===idx&&st==='done')?'past':i===idx?'cur':'')+'"><span class="bul">'+(i<idx||(i===idx&&st==='done')?'✓':'')+'</span><span class="t">'+s.label+'</span></li>').join('')+'</ol>')+
+      '<div class="facts">'+
+        '<div><span class="k">'+(st==='done'?'تاريخ التسليم':'موعد التسليم المتوقع')+'</span><span class="v">'+esc(dueTxt||'يُحدَّد قريبًا')+'</span></div>'+
+        '<div><span class="k">آخر تحديث</span><span class="v">'+esc(fmtT(o.updated_at)||'—')+'</span></div>'+
+      '</div>'+
+    '</section>'+
+    (revs.length ? '<section class="card"><h2>تعديلاتك</h2>'+revs.map((r,i)=>{ const [l,c] = REV[r.status] || REV.new; return '<div class="rev"><span class="n">تعديل '+(i+1)+'</span><p>'+esc(r.description)+'</p><span class="pill '+c+'">'+l+'</span></div>'; }).join('')+'</section>' : '')+
+    (links.length ? '<section class="card"><h2>روابط طلبك</h2><div class="links">'+links.map((l,i)=>'<a href="'+esc(l.url)+'" target="_blank" rel="noopener noreferrer"><b>'+esc(l.label||('رابط '+(i+1)))+'</b><span>'+esc(l.url)+'</span></a>').join('')+'</div></section>' : '')+
+    '<p class="foot">الصفحة تتحدّث تلقائيًا · <button class="refresh" type="button" id="refresh">تحديث الآن</button></p>';
+  document.getElementById('refresh').onclick = load;
+}
+let cfg = parseLink(), busy = false;
+async function load(){
+  if(!cfg){ message('الرابط غير مكتمل','تأكدي أنك فتحتِ الرابط كاملًا كما وصلك.'); return; }
+  if(busy) return; busy = true;
+  try{
+    const res = await fetch(cfg.url + '/rest/v1/rpc/get_shared_order', {
+      method:'POST',
+      headers:{'apikey':cfg.key, 'Authorization':'Bearer '+cfg.key, 'Content-Type':'application/json'},
+      body: JSON.stringify({p_token: cfg.token})
+    });
+    if(!res.ok) throw new Error('http '+res.status);
+    const data = await res.json();
+    if(!data){ message('الرابط غير متاح','قد يكون تم إيقافه أو تغييره. تواصلي معنا للحصول على رابط جديد.'); return; }
+    render(data);
+  }catch(e){
+    if(!app.querySelector('.steps, .now')) message('تعذّر تحميل حالة الطلب','تأكدي من الاتصال بالإنترنت ثم أعيدي فتح الرابط.');
+  }finally{ busy = false; }
+}
+window.addEventListener('hashchange', ()=>{ cfg = parseLink(); load(); });
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible') load(); });
+setInterval(()=>{ if(document.visibilityState==='visible') load(); }, 60000);
+load();
+</script>
+</body>
+</html>

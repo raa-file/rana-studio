@@ -1,0 +1,1710 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rana Studio | إدارة الطلبات</title>
+<meta name="theme-color" content="#F4FAFE">
+<link rel="apple-touch-icon" sizes="180x180" href="rs-apple-touch-icon.png?v=1">
+<link rel="icon" type="image/png" sizes="192x192" href="rs-icon-192.png?v=1">
+<link rel="manifest" href="rana-studio.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Rana Studio">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@300;400;500;600;700&family=Poppins:wght@400;500&display=swap">
+<style>
+/* Layout: mobile-first app shell — top bar + bottom tab bar on phone, side nav on wide screens */
+:root{
+  --bg:#F4FAFE; --surface:#FFFFFF; --surface-2:#F7FBFE; --ink:#1A2533; --muted:#6B7C8F; --line:#DCEAF5;
+  --accent:#1F5FBF; --accent-ink:#FFFFFF; --accent-soft:#E6F2FC; --rose:#3AA8E0; --magenta:#1D4FB0; --icon:#2577C8;
+  --danger:#B4232F; --danger-soft:#FBE9EA; --warn:#9A5B00; --warn-soft:#FFF2DC; --ok:#1F7A4A; --ok-soft:#E3F4EA;
+  --s-new:#2F5FB3; --s-new-bg:#E7EEFB;
+  --s-progress:#9A5B00; --s-progress-bg:#FFF1D6;
+  --s-preview:#6A47A8; --s-preview-bg:#EFE8FA;
+  --s-reply:#B5481D; --s-reply-bg:#FDEADF;
+  --s-revisions:#B4232F; --s-revisions-bg:#FBE6E8;
+  --s-ready:#127068; --s-ready-bg:#DDF3F0;
+  --s-done:#4C6157; --s-done-bg:#E6ECE9;
+  --s-cancelled:#7A7377; --s-cancelled-bg:#EEEAEC;
+  --demo:#7A5A00; --demo-bg:#FFF6CC;
+  --shadow:0 1px 2px rgba(20,50,90,.05),0 4px 14px rgba(20,50,90,.04);
+  --font-display:"Readex Pro",system-ui,sans-serif;
+  --font-brand:"Readex Pro",system-ui,sans-serif; --font-latin:"Poppins",system-ui,sans-serif;
+  --font-body:"Readex Pro",system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;
+  --r:14px; --tabbar-h:64px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0F1722; --surface:#16202D; --surface-2:#1B2735; --ink:#E6EEF6; --muted:#97A8BA; --line:#273546;
+    --accent:#7DB8F5; --accent-ink:#0B1A2E; --accent-soft:#1B2E45; --rose:#7FD0F5; --magenta:#8DB8FF; --icon:#93C5F7;
+    --danger:#F08A92; --danger-soft:#3A1F22; --warn:#F2B65C; --warn-soft:#3A2D17; --ok:#7FD3A3; --ok-soft:#183324;
+    --s-new:#8FB2F2; --s-new-bg:#1E2A42; --s-progress:#F2B65C; --s-progress-bg:#3A2D17;
+    --s-preview:#C2A6F2; --s-preview-bg:#2C2340; --s-reply:#F4A27E; --s-reply-bg:#3D2619;
+    --s-revisions:#F08A92; --s-revisions-bg:#3A1F22; --s-ready:#6FD1C5; --s-ready-bg:#16332F;
+    --s-done:#A9BDB3; --s-done-bg:#25302C; --s-cancelled:#B3A9AE; --s-cancelled-bg:#2E2729; --demo:#F2D36B; --demo-bg:#3A3215;
+    --shadow:0 1px 2px rgba(0,0,0,.3);
+    color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:14.5px;line-height:1.65;-webkit-tap-highlight-color:transparent}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+[hidden]{display:none!important}
+.num,.ltr{font-variant-numeric:tabular-nums}
+.ltr{direction:ltr;unicode-bidi:isolate;display:inline-block}
+
+/* shell */
+.topbar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  padding:calc(10px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px));display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
+.brand{flex-direction:column;align-items:center;gap:3px;flex:0 0 auto!important}
+.brand b{font-family:var(--font-brand);font-weight:700;font-size:22px;line-height:1.35;white-space:nowrap}
+.brand b .r1{color:var(--magenta)} .brand b .r2{color:var(--rose)}
+.brand small{font-family:var(--font-latin);color:var(--muted);font-size:8.5px;letter-spacing:.24em;margin-left:.24em;line-height:1;direction:ltr;white-space:nowrap}
+.side .brand{align-self:flex-start;margin:0 10px 16px!important}
+.side{display:none}
+main{padding:16px max(16px,env(safe-area-inset-right,0px)) calc(var(--tabbar-h) + 90px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));max-width:1180px;margin-inline:auto}
+.tabbar{position:fixed;inset-inline:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(6,1fr);
+  padding:4px max(6px,env(safe-area-inset-right,0px)) calc(4px + env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px))}
+.tab{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px;border:0;background:none;color:var(--muted);font-size:11.5px;text-decoration:none;border-radius:10px}
+.tab svg{width:22px;height:22px}
+.tab[aria-current="page"]{color:var(--accent);font-weight:600}
+.tab[aria-current="page"] svg{stroke-width:2.2}
+.fab{position:fixed;z-index:31;inset-inline-end:max(16px,env(safe-area-inset-left,0px));bottom:calc(var(--tabbar-h) + 14px + env(safe-area-inset-bottom,0px));
+  height:52px;padding:0 20px;border-radius:26px;border:0;background:var(--accent);color:var(--accent-ink);font-weight:600;display:flex;align-items:center;gap:8px;box-shadow:0 6px 18px rgba(31,95,191,.3);cursor:pointer}
+.fab svg{width:20px;height:20px}
+@media (min-width:900px){
+  .topbar,.tabbar{display:none}
+  .side{display:flex;flex-direction:column;gap:6px;position:fixed;inset-block:0;inset-inline-start:0;width:240px;background:var(--surface);border-inline-end:1px solid var(--line);padding:22px 14px}
+  .side .brand{margin:0 6px 18px}
+  .side .tab{flex-direction:row;gap:12px;font-size:15px;padding:10px 12px;justify-content:flex-start}
+  .side .tab[aria-current="page"]{background:var(--accent-soft)}
+  .side .add{margin-top:10px;justify-content:center}
+  main{margin-inline-start:240px;padding:28px 32px 60px}
+  .fab{display:none}
+}
+
+/* type */
+h1,h2,h3,h4{margin:0;line-height:1.3;text-wrap:balance}
+h1{font-family:var(--font-display);font-weight:700;font-size:25px;line-height:1.4}
+h2{font-family:var(--font-display);font-weight:600;font-size:17px;line-height:1.45}
+h3{font-size:15px;font-weight:700}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.page-head p{margin:2px 0 0}
+.section{margin-top:22px}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.stack{display:flex;flex-direction:column;gap:10px}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.spacer{flex:1}
+
+/* surfaces */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.notice{display:flex;gap:10px;align-items:flex-start;border-radius:12px;padding:12px 14px;font-size:13.5px;background:var(--surface-2);border:1px solid var(--line)}
+.notice.warn{background:var(--warn-soft);border-color:transparent;color:var(--ink)}
+.notice.danger{background:var(--danger-soft);border-color:transparent}
+.notice svg{flex:0 0 18px;width:18px;height:18px;margin-top:2px}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px;padding:0 14px;border-radius:11px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-weight:500;cursor:pointer;text-decoration:none;white-space:nowrap}
+.btn svg{width:18px;height:18px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.wa{background:#1F8F4E;border-color:#1F8F4E;color:#fff}
+.btn.danger{color:var(--danger);border-color:color-mix(in srgb,var(--danger) 35%,var(--line))}
+.btn.ghost{border-color:transparent;background:transparent}
+.btn.sm{min-height:34px;padding:0 10px;font-size:13.5px;border-radius:9px}
+.btn.block{width:100%}
+.icon-btn{width:38px;height:38px;display:inline-grid;place-items:center;border-radius:10px;border:1px solid var(--line);background:var(--surface);cursor:pointer;color:var(--ink)}
+.icon-btn svg{width:18px;height:18px}
+.seg{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:11px;padding:3px}
+.seg button{border:0;background:none;padding:6px 12px;border-radius:8px;cursor:pointer;color:var(--muted);font-size:13.5px}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);font-weight:600;box-shadow:var(--shadow)}
+
+/* chips & status */
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;padding:2px 9px;border-radius:999px;background:var(--surface-2);color:var(--muted);border:1px solid var(--line);white-space:nowrap}
+.chip.late{background:var(--danger-soft);color:var(--danger);border-color:transparent}
+.chip.today{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.chip.ok{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.chip.demo{background:var(--demo-bg);color:var(--demo);border:1px dashed color-mix(in srgb,var(--demo) 45%,transparent)}
+.st{--c:var(--muted);--b:var(--surface-2)}
+.st-new{--c:var(--s-new);--b:var(--s-new-bg)} .st-progress{--c:var(--s-progress);--b:var(--s-progress-bg)}
+.st-preview{--c:var(--s-preview);--b:var(--s-preview-bg)} .st-reply{--c:var(--s-reply);--b:var(--s-reply-bg)}
+.st-revisions{--c:var(--s-revisions);--b:var(--s-revisions-bg)} .st-ready{--c:var(--s-ready);--b:var(--s-ready-bg)}
+.st-done{--c:var(--s-done);--b:var(--s-done-bg)}
+.st-cancelled{--c:var(--s-cancelled);--b:var(--s-cancelled-bg)}
+.card.is-cancelled h4{text-decoration:line-through;color:var(--muted)}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:2px 10px;border-radius:999px;background:var(--b);color:var(--c);white-space:nowrap}
+.badge::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--c)}
+select.status-select{appearance:none;-webkit-appearance:none;border:0;border-radius:999px;background-color:var(--b);color:var(--c);font-weight:600;font-size:13px;min-height:34px;width:auto;cursor:pointer;max-width:100%;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5l3 3 3-3' fill='none' stroke='%23808a87' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-position:left 10px center;background-size:12px 12px;background-repeat:no-repeat;padding:6px 12px 6px 28px}
+.card .foot select.status-select{width:100%}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+@media (min-width:600px){.stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (min-width:1100px){.stats{grid-template-columns:repeat(7,minmax(0,1fr))}}
+.stat{text-align:start;border:1px solid var(--line);background:var(--surface);border-radius:var(--r);padding:12px 14px;cursor:pointer;display:flex;flex-direction:column;gap:2px}
+.stat .n{font-size:26px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat .l{font-size:12.5px;color:var(--muted)}
+.stat.total{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.stat.total .l{color:inherit;opacity:.85}
+.stat.alert .n{color:var(--danger)}
+.stat .dot{width:8px;height:8px;border-radius:50%;background:var(--c);display:inline-block;margin-inline-end:6px}
+
+/* lists */
+.list{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.item{display:flex;align-items:center;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);text-decoration:none;color:inherit;cursor:pointer;min-width:0}
+.item:last-child{border-bottom:0}
+.item .grow{flex:1;min-width:0}
+.item .t{font-weight:600;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item .s{font-size:12.5px;color:var(--muted);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kind{width:34px;height:34px;flex:0 0 34px;border-radius:10px;display:grid;place-items:center;background:var(--accent-soft);color:var(--icon)}
+.kind svg{width:18px;height:18px}
+.kind.late{background:var(--danger-soft);color:var(--danger)}
+.kind.follow{background:var(--s-preview-bg);color:var(--s-preview)}
+.kind.reply{background:var(--s-reply-bg);color:var(--s-reply)}
+
+/* empty */
+.empty{text-align:center;padding:28px 16px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:8px}
+.empty>svg{width:88px;height:88px;color:var(--accent);opacity:.9}
+.empty b{color:var(--ink);font-size:15.5px}
+.empty.compact{padding:16px}
+.empty.compact>svg{display:none}
+
+/* toolbar */
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;align-items:center}
+.search{flex:1 1 220px;position:relative;min-width:0}
+.search input{width:100%;padding-inline-start:38px}
+.search svg{position:absolute;inset-inline-start:12px;top:50%;transform:translateY(-50%);width:18px;height:18px;color:var(--muted);pointer-events:none}
+input,select,textarea{background:var(--surface);border:1px solid var(--line);border-radius:11px;min-height:44px;padding:8px 12px;font-size:16px;width:100%}
+textarea{min-height:96px;resize:vertical;line-height:1.6}
+.toolbar select{width:auto;flex:1 1 140px;font-size:14px}
+input:focus,select:focus,textarea:focus{outline:2px solid color-mix(in srgb,var(--accent) 55%,transparent);outline-offset:0;border-color:var(--accent)}
+.toggle{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;color:var(--muted);cursor:pointer}
+.toggle input{width:18px;height:18px;min-height:0;accent-color:var(--accent)}
+
+/* kanban */
+.board{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px;margin-inline:calc(-1 * max(16px,env(safe-area-inset-right,0px)));padding-inline:max(16px,env(safe-area-inset-right,0px))}
+.col{flex:0 0 84%;max-width:320px;scroll-snap-align:start;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);padding:10px;display:flex;flex-direction:column;gap:8px;align-self:flex-start}
+@media (min-width:900px){.col{flex:0 0 268px}.board{margin-inline:0;padding-inline:0}}
+.col-head{display:flex;align-items:center;justify-content:space-between;padding:2px 4px 4px}
+.col-head .cnt{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:6px;cursor:pointer}
+.card.is-late{border-color:color-mix(in srgb,var(--danger) 45%,var(--line))}
+.card h4{font-size:15px}
+.card .meta{display:flex;flex-wrap:wrap;gap:6px}
+.card .foot{display:flex;gap:6px;align-items:center;margin-top:4px}
+.card .foot select{flex:1;min-width:0}
+.col .empty{padding:14px 6px;font-size:13px}
+
+/* table */
+.table-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:var(--r)}
+table{border-collapse:collapse;width:100%;min-width:720px;font-size:14px}
+th,td{text-align:start;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:12px;color:var(--muted);font-weight:600;background:var(--surface-2)}
+tr:last-child td{border-bottom:0}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--surface-2)}
+
+/* detail */
+.back{display:inline-flex;align-items:center;gap:4px;color:var(--muted);text-decoration:none;font-size:14px;margin-bottom:10px;cursor:pointer;background:none;border:0;padding:0}
+.back svg{width:18px;height:18px}
+.detail-head{display:flex;flex-direction:column;gap:10px}
+.detail-head .acts{display:flex;flex-wrap:wrap;gap:8px}
+.grid2{display:grid;grid-template-columns:1fr;gap:14px}
+@media (min-width:900px){.grid2{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}}
+.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 14px}
+.fact{display:flex;flex-direction:column;gap:2px;min-width:0}
+.fact .k{font-size:12px;color:var(--muted)}
+.fact .v{font-weight:600;overflow-wrap:anywhere}
+.fact.wide{grid-column:1/-1}
+.prose{white-space:pre-wrap;overflow-wrap:anywhere;margin:0}
+.counts{display:flex;gap:8px;flex-wrap:wrap}
+.rev{border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;background:var(--surface)}
+.rev.open{border-inline-start:3px solid var(--s-revisions)}
+.rev .rev-top{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.rev .no{font-weight:700;font-size:13px;color:var(--muted)}
+.rev .dates{font-size:12.5px;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap}
+.task{display:flex;align-items:center;gap:10px;padding:8px 2px;border-bottom:1px solid var(--line)}
+.task:last-child{border-bottom:0}
+.task input{width:20px;height:20px;min-height:0;flex:0 0 20px;accent-color:var(--accent)}
+.task label{flex:1;min-width:0;overflow-wrap:anywhere;cursor:pointer}
+.task.done label{text-decoration:line-through;color:var(--muted)}
+.addline{display:flex;gap:8px;margin-top:8px}
+.addline input{flex:1;min-width:0}
+.timeline{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.timeline li{position:relative;padding:0 18px 14px 0;font-size:13.5px}
+.timeline li::before{content:"";position:absolute;right:3px;top:8px;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.timeline li::after{content:"";position:absolute;right:6.5px;top:18px;bottom:0;width:1px;background:var(--line)}
+.timeline li:last-child::after{display:none}
+.timeline time{display:block;font-size:12px;color:var(--muted)}
+.saved{font-size:12px;color:var(--ok);opacity:0;transition:opacity .2s}
+.saved.on{opacity:1}
+
+/* clients */
+.client{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:10px}
+.client .head{display:flex;align-items:center;gap:10px}
+.avatar{width:40px;height:40px;flex:0 0 40px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font-weight:700}
+.client .projects{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:10px}
+.client .projects a{display:flex;justify-content:space-between;gap:8px;text-decoration:none;color:inherit;font-size:14px;align-items:center}
+.followbox{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.followbox input{width:auto;flex:1 1 150px}
+
+/* calendar */
+.cal-nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.cal-nav h2{flex:1;min-width:120px}
+.month{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.dow{font-size:11.5px;color:var(--muted);text-align:center;padding:4px 0}
+.day{aspect-ratio:1/1.05;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:4px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;min-width:0;max-width:100%}
+.day.out{opacity:.4}
+.day.today{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.day[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.day .d{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+.dots{display:flex;gap:3px;flex-wrap:wrap;justify-content:center}
+.dots i{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.dots i.f{background:var(--s-preview)}
+.dots i.l{background:var(--danger)}
+.day[aria-pressed="true"] .dots i{background:var(--accent-ink)}
+.week .wd{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.week .wd:last-child{border-bottom:0}
+.week .wd .lab{width:64px;flex:0 0 64px;font-size:13px;color:var(--muted)}
+.week .wd .lab b{display:block;color:var(--ink);font-size:15px}
+.week .wd.today .lab b{color:var(--accent)}
+.week .wd .its{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.ev{display:flex;align-items:center;gap:8px;font-size:13.5px;padding:6px 10px;border-radius:9px;background:var(--surface-2);text-decoration:none;color:inherit;cursor:pointer;min-width:0}
+.ev span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.ev.due{background:var(--accent-soft)}
+.ev.follow{background:var(--s-preview-bg)}
+.ev.late{background:var(--danger-soft)}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:10px}
+.legend i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-inline-end:5px;background:var(--accent)}
+
+/* settings */
+.set{display:flex;flex-direction:column;gap:10px}
+.set p{margin:0}
+.meter{height:8px;border-radius:99px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden}
+.meter i{display:block;height:100%;background:var(--accent)}
+
+/* sheet / modal */
+.sheet{position:fixed;inset:0;z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.sheet .backdrop{position:absolute;inset:0;background:rgba(10,20,18,.45);animation:fade .18s ease}
+.sheet .panel-s{position:relative;width:100%;max-width:640px;max-height:92dvh;overflow:auto;background:var(--surface);border-radius:20px 20px 0 0;
+  padding:8px max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));animation:up .22s ease}
+.sheet .grab{width:40px;height:4px;border-radius:4px;background:var(--line);margin:4px auto 10px}
+.sheet .s-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;position:sticky;top:-8px;background:var(--surface);padding:8px 0;z-index:1}
+@media (min-width:700px){.sheet{align-items:center}.sheet .panel-s{border-radius:20px;padding:16px 22px 22px}.sheet .grab{display:none}}
+@keyframes up{from{transform:translateY(30px);opacity:.4}to{transform:none;opacity:1}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.form{display:flex;flex-direction:column;gap:14px}
+.fgrid{display:grid;grid-template-columns:1fr;gap:14px}
+@media (min-width:560px){.fgrid{grid-template-columns:1fr 1fr}.fgrid .full{grid-column:1/-1}}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field>label,.field>.lbl{font-size:13px;font-weight:600}
+.field .req{color:var(--danger)}
+.field .hint{font-size:12px;color:var(--muted)}
+.field .err{font-size:12.5px;color:var(--danger)}
+.field.invalid input,.field.invalid select{border-color:var(--danger)}
+.phone{display:flex;gap:8px;direction:ltr}
+.phone .cc{flex:0 0 92px;display:flex;align-items:center;border:1px solid var(--line);border-radius:11px;background:var(--surface);padding-inline-start:10px}
+.phone .cc span{color:var(--muted)}
+.phone .cc input{border:0;min-height:42px;padding:8px 6px;outline:0}
+.phone>input{flex:1;min-width:0;text-align:left}
+.fieldset{border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:12px;background:var(--surface-2)}
+.fieldset legend{font-size:12px;color:var(--muted);padding:0 6px}
+.form-actions{display:flex;gap:8px;position:sticky;bottom:-20px;background:var(--surface);padding:12px 0 4px;border-top:1px solid var(--line)}
+.form-actions .btn{flex:1}
+
+/* content */
+.content-add{display:grid;grid-template-columns:1fr;gap:12px}
+@media (min-width:760px){.content-add{grid-template-columns:minmax(0,1.2fr) minmax(0,1.2fr) auto auto;align-items:end}}
+.seg.yn{align-self:flex-start}
+.seg.yn button{min-width:56px;padding:8px 14px}
+.content-grid{display:grid;grid-template-columns:1fr;gap:12px}
+@media (min-width:760px){.content-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ct-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:flex;flex-direction:column;gap:10px}
+.ct-card.all{border-color:color-mix(in srgb,var(--ok) 40%,var(--line))}
+.ct-top{display:flex;gap:10px;align-items:flex-start}
+.ct-top h3{font-size:16px;overflow-wrap:anywhere}
+.ct-link{font-size:12.5px;color:var(--accent);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:none}
+.ch-groups{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);padding-top:10px}
+.ch-group{display:flex;align-items:center;gap:10px}
+.ch-name{width:68px;flex:0 0 68px;font-size:13px;color:var(--muted)}
+.ch-btns{display:flex;gap:8px;flex-wrap:wrap}
+.ch{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px 0 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font-size:13.5px;cursor:pointer}
+.ch .tick{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:11px;line-height:1;font-weight:700}
+.ch.on{background:var(--ok-soft);border-color:transparent;color:var(--ok);font-weight:600}
+.ch.on .tick{background:var(--ok);border-color:var(--ok);color:var(--surface)}
+.tab span{white-space:nowrap}
+@media (max-width:420px){.tab{font-size:10.5px}}
+
+/* share */
+.share-panel{border-color:color-mix(in srgb,var(--accent) 30%,var(--line))}
+.share-link{display:flex;gap:8px}
+.share-link input{flex:1;min-width:0;font-size:13px;min-height:38px;color:var(--muted)}
+
+/* links */
+.links-box{display:flex;flex-direction:column;gap:8px}
+.link-row{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr) auto;gap:8px;align-items:center}
+@media (max-width:520px){.link-row{grid-template-columns:minmax(0,1fr) auto}.link-row input[name=linkUrl]{grid-column:1;grid-row:2}.link-row .icon-btn{grid-row:1/3;grid-column:2}}
+.link-list{display:flex;flex-direction:column;gap:6px;margin-top:2px}
+.link-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:11px;background:var(--surface-2);min-width:0}
+.link-item a{flex:1;min-width:0;display:flex;flex-direction:column;text-decoration:none;color:var(--ink)}
+.link-item a b{font-size:14px}
+.link-item a span{font-size:12.5px;color:var(--accent);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.link-item .li-ic{color:var(--icon);display:grid}.link-item .li-ic svg{width:18px;height:18px}
+.link-item .icon-btn{width:32px;height:32px}
+.link-add{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr) auto;gap:8px;margin-top:8px}
+.link-add input{min-height:38px;font-size:15px}
+@media (max-width:520px){.link-add{grid-template-columns:minmax(0,1fr) auto}.link-add input[name=url]{grid-column:1}.link-add .btn{grid-row:1/3;grid-column:2;align-self:stretch}}
+
+/* sync */
+.topbar .brand{flex:1;min-width:0}
+.sync-pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;text-decoration:none;white-space:nowrap;background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+.sync-pill::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.sync-pill.ok{color:var(--ok);background:var(--ok-soft);border-color:transparent}
+.sync-pill.busy{color:var(--warn);background:var(--warn-soft);border-color:transparent}
+.sync-pill.err{color:var(--danger);background:var(--danger-soft);border-color:transparent}
+.side .sync-pill{align-self:flex-start;margin:0 8px 10px}
+.steps{margin:0;padding-inline-start:20px;display:flex;flex-direction:column;gap:4px;font-size:13.5px}
+
+/* toasts */
+#toasts{position:fixed;z-index:60;inset-inline:0;top:calc(10px + env(safe-area-inset-top,0px));display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;padding:0 16px}
+.toast{background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-size:14px;box-shadow:0 6px 20px rgba(0,0,0,.2);max-width:440px;animation:up .2s ease;pointer-events:auto}
+.toast.err{background:var(--danger);color:#fff}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="#home" aria-label="Rana Studio"><b dir="ltr"><span class="r1">Rana</span> <span class="r2">Studio</span></b><small>GRAPHIC DESIGN</small></a>
+  <a class="sync-pill" id="sync-pill" href="#settings" hidden></a>
+  <a class="icon-btn" href="#settings" aria-label="الإعدادات"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></a>
+</header>
+
+<aside class="side" id="side"></aside>
+<main id="main" tabindex="-1"></main>
+<nav class="tabbar" id="tabbar" aria-label="التنقل"></nav>
+<button class="fab" type="button" data-act="new-order"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>طلب جديد</button>
+
+<div class="sheet" id="sheet" hidden>
+  <div class="backdrop" data-act="close-sheet"></div>
+  <div class="panel-s" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+    <div class="grab"></div>
+    <div class="s-head"><h2 id="sheet-title"></h2><button class="icon-btn" type="button" data-act="close-sheet" aria-label="إغلاق"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div id="sheet-body"></div>
+  </div>
+</div>
+<div id="toasts" aria-live="polite"></div>
+<input type="file" id="import-file" accept="application/json,.json" hidden>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+'use strict';
+/* ========== Supabase (optional) ==========
+   ضعي هنا رابط مشروعك ومفتاح anon public من Supabase → Project Settings → API
+   حتى يعمل الربط تلقائيًا على كل الأجهزة. المفتاح العام آمن في الواجهة لأن الحماية بسياسات RLS.
+   لا تضعي مفتاح service_role هنا أبدًا. */
+const SUPABASE_URL = '';
+const SUPABASE_ANON_KEY = '';
+
+/* ========== Constants ========== */
+const STORE_KEY = 'ranastudio.v1';
+const STATUSES = [
+  ['new','طلب جديد'],['progress','قيد التنفيذ'],['preview','بانتظار معاينة العميلة'],
+  ['reply','بانتظار رد العميلة'],['revisions','تعديلات مطلوبة'],['ready','جاهز للتسليم'],['done','مكتمل'],['cancelled','ملغي']
+];
+const ST = Object.fromEntries(STATUSES);
+const REV_STATUSES = [['new','جديد'],['progress','قيد التنفيذ'],['done','تم التنفيذ'],['sent','أُرسل للعميلة'],['approved','تمت الموافقة عليه']];
+const REV = Object.fromEntries(REV_STATUSES);
+const REV_OPEN = ['new','progress'];
+const REV_ST_CLASS = {new:'st-revisions',progress:'st-progress',done:'st-ready',sent:'st-preview',approved:'st-done'};
+const SERVICES = ['موقع إلكتروني','مبادرة تعليمية','مبادرة','عرض تفاعلي','ملف إنجاز','ملف PDF','أسئلة','منصة','تصميم جرافيكي','أخرى'];
+const CLOSED = ['done','cancelled'];
+const LINK_LABELS = ['المعاينة','الموقع المنشور','الملف النهائي','ملف PDF','ملفات التصميم','مجلد Drive'];
+const URL_RE = /^https?:\/\/\S+\.\S+/i;
+/* Several links per order are stored in the single "link" field: a plain URL when there is one unnamed link, otherwise JSON */
+function parseLinks(v){
+  v = String(v||'').trim(); if(!v) return [];
+  if(v[0]==='['){ try{ const a = JSON.parse(v); if(Array.isArray(a)) return a.filter(x=>x&&x.url).map(x=>({label:String(x.label||''),url:String(x.url)})); }catch(e){} }
+  return [{label:'',url:v}];
+}
+function serializeLinks(arr){
+  const a = arr.filter(x=>x.url).map(x=>({label:(x.label||'').trim(),url:x.url.trim()}));
+  if(!a.length) return '';
+  if(a.length===1 && !a[0].label) return a[0].url;
+  return JSON.stringify(a);
+}
+function linkRow(l){
+  return '<div class="link-row"><input name="linkLabel" list="link-labels" placeholder="اسم الرابط (اختياري)" value="'+esc(l.label)+'" aria-label="اسم الرابط"><input name="linkUrl" type="url" inputmode="url" dir="ltr" placeholder="https://" value="'+esc(l.url)+'" aria-label="الرابط"><button class="icon-btn" type="button" data-act="link-remove" aria-label="حذف الرابط">'+I.trash+'</button></div>';
+}
+const PAY = [['unpaid','لم يُدفع'],['deposit','عربون مدفوع'],['paid','مدفوع بالكامل']];
+const PAYM = Object.fromEntries(PAY);
+
+const I = {
+  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>',
+  orders:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="5" height="16" rx="1.5"/><rect x="10" y="4" width="5" height="11" rx="1.5"/><rect x="17" y="4" width="4" height="7" rx="1.5"/></svg>',
+  clients:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.5 3.4-5.5 6.5-5.5s5.7 2 6.5 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14.8c1.9.7 3.1 2.5 3.5 5.2"/></svg>',
+  calendar:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16.5" rx="2.5"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg>',
+  settings:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>',
+  content:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4.5-2.5z"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>',
+  search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
+  wa:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.1 5.1 0 0 0 1.1 2.7 11.6 11.6 0 0 0 4.4 3.9c1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.2-.3-.3-.6-.4z"/></svg>',
+  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"/></svg>',
+  next:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 6-6 6 6 6"/></svg>',
+  edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg>',
+  trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>',
+  archive:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v10h14V9M10 13h4"/></svg>',
+  link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>',
+  clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+  alert:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17.5v.01"/></svg>',
+  chat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>',
+  info:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.01"/></svg>',
+  bell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/></svg>',
+  emptyArt:'<svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="22" y="24" width="76" height="80" rx="10" opacity=".25" fill="currentColor" stroke="none"/><rect x="30" y="16" width="60" height="80" rx="10" fill="var(--surface)"/><path d="M44 38h32M44 52h32M44 66h20"/><circle cx="86" cy="88" r="14" fill="var(--surface)"/><path d="M86 81v14M79 88h14"/></svg>'
+};
+
+/* ========== Storage ========== */
+function emptyDb(){ return {version:1, clients:[], projects:[], revisions:[], tasks:[], events:[], content:[], settings:{}}; }
+let storageOk = true;
+function loadDb(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if(!raw) return emptyDb();
+    return normalizeDb(JSON.parse(raw));
+  }catch(e){ storageOk = false; return emptyDb(); }
+}
+function normalizeDb(d){
+  const base = emptyDb();
+  if(!d || typeof d !== 'object') return base;
+  for(const k of ['clients','projects','revisions','tasks','events','content']) base[k] = Array.isArray(d[k]) ? d[k] : [];
+  base.settings = (d.settings && typeof d.settings==='object') ? d.settings : {};
+  return base;
+}
+let db = loadDb();
+function save(msg){
+  try{
+    localStorage.setItem(STORE_KEY, JSON.stringify(db));
+    storageOk = true;
+    if(msg) toast(msg);
+    if(typeof scheduleSync==='function') scheduleSync();
+    return true;
+  }catch(e){
+    storageOk = false;
+    toast('لم يتم الحفظ: تخزين المتصفح ممتلئ أو معطّل. صدّري نسخة احتياطية من الإعدادات.', 'err');
+    return false;
+  }
+}
+async function askPersist(){
+  try{ if(navigator.storage && navigator.storage.persist){ return await navigator.storage.persist(); } }catch(e){}
+  return false;
+}
+
+/* ========== Helpers ========== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : Date.now().toString(36)+Math.random().toString(36).slice(2));
+const pad = n => String(n).padStart(2,'0');
+const ymd = d => d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const today = () => ymd(new Date());
+const parseD = s => new Date(s+'T00:00:00');
+const addDays = (s,n) => { const d = parseD(s); d.setDate(d.getDate()+n); return ymd(d); };
+const diffDays = (a,b) => Math.round((parseD(a)-parseD(b))/86400000);
+const nowIso = () => new Date().toISOString();
+const LOC = 'ar-u-ca-gregory-nu-latn';
+const fmt = (s, o={day:'numeric',month:'short'}) => s ? new Intl.DateTimeFormat(LOC,o).format(parseD(s)) : '—';
+const fmtLong = s => fmt(s,{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+const fmtTime = iso => new Intl.DateTimeFormat(LOC,{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}).format(new Date(iso));
+const money = n => (n || n===0) && n!=='' ? Number(n).toLocaleString('ar-u-nu-latn') + ' ر.س' : '—';
+function dayWord(n){ n=Math.abs(n); if(n===1) return 'يوم'; if(n===2) return 'يومين'; if(n<=10) return n+' أيام'; return n+' يومًا'; }
+function toLatinDigits(s){ return String(s||'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)); }
+
+/* Phone normalization → digits only, country code separated */
+function normalizePhone(ccRaw, numRaw){
+  let cc = toLatinDigits(ccRaw).replace(/\D/g,'') || '966';
+  let n = toLatinDigits(numRaw).replace(/\D/g,'');
+  if(n.startsWith('00')){ n = n.slice(2); if(n.startsWith(cc)) n = n.slice(cc.length); }
+  else if(n.startsWith(cc) && n.length >= cc.length + 8){ n = n.slice(cc.length); }
+  n = n.replace(/^0+/,'');
+  return {cc, num:n, full: cc+n};
+}
+function phoneError(cc, num){
+  if(!num) return 'رقم الجوال مطلوب';
+  if(cc==='966'){ if(!/^5\d{8}$/.test(num)) return 'رقم سعودي غير صحيح: يبدأ بـ 5 ويتكوّن من 9 أرقام (مثل 5XXXXXXXX)'; }
+  else if(num.length<6 || num.length>12) return 'الرقم قصير أو طويل جدًا لهذا المفتاح';
+  return '';
+}
+const waUrl = c => 'https://wa.me/' + c.cc + c.num;
+const phoneDisplay = c => '+' + c.cc + ' ' + c.num;
+
+const clientOf = p => db.clients.find(c => c.id===p.clientId) || {name:'(عميلة محذوفة)',cc:'966',num:''};
+const revsOf = pid => db.revisions.filter(r => r.projectId===pid).sort((a,b)=>a.createdAt.localeCompare(b.createdAt));
+const tasksOf = pid => db.tasks.filter(t => t.projectId===pid);
+const isOverdue = p => !!p.due && !CLOSED.includes(p.status) && p.due < today();
+const isFollowLate = c => !!c.followUp && c.followUp < today();
+const activeProjects = () => db.projects.filter(p => !p.archived);
+
+function logEvent(projectId, text, clientId){
+  db.events.push({id:uid(), projectId:projectId||null, clientId:clientId||null, text, at:nowIso()});
+}
+function touch(p){ p.updatedAt = nowIso(); }
+
+function dueChip(p){
+  if(p.status==='done') return '<span class="chip ok">سُلّم'+(p.completedAt||p.due?' · '+esc(fmt(p.completedAt||p.due)):'')+'</span>';
+  if(p.status==='cancelled') return '<span class="chip">ملغي</span>';
+  if(!p.due) return '<span class="chip">بدون موعد</span>';
+  const d = diffDays(p.due, today());
+  if(d<0) return '<span class="chip late">متأخر '+dayWord(d)+'</span>';
+  if(d===0) return '<span class="chip today">التسليم اليوم</span>';
+  if(d===1) return '<span class="chip today">التسليم غدًا</span>';
+  return '<span class="chip">'+esc(fmt(p.due))+' · بعد '+dayWord(d)+'</span>';
+}
+function followChip(c){
+  if(!c.followUp) return '';
+  const d = diffDays(c.followUp, today());
+  if(d<0) return '<span class="chip late">متابعة متأخرة '+dayWord(d)+'</span>';
+  if(d===0) return '<span class="chip today">متابعة اليوم</span>';
+  return '<span class="chip">متابعة '+esc(fmt(c.followUp))+'</span>';
+}
+const badge = st => '<span class="badge st st-'+st+'">'+esc(ST[st])+'</span>';
+function statusSelect(p, extra=''){
+  return '<select class="status-select st st-'+p.status+'" data-change="status" data-id="'+p.id+'" aria-label="حالة الطلب" '+extra+'>'+
+    STATUSES.map(([k,v])=>'<option value="'+k+'"'+(k===p.status?' selected':'')+'>'+v+'</option>').join('')+'</select>';
+}
+const demoChip = x => x.demo ? '<span class="chip demo">تجريبي</span>' : '';
+function revOpenCount(pid){ return revsOf(pid).filter(r=>REV_OPEN.includes(r.status)).length; }
+
+/* ========== Toast ========== */
+function toast(msg, type){
+  const t = document.createElement('div');
+  t.className = 'toast' + (type==='err' ? ' err' : '');
+  t.textContent = msg;
+  $('#toasts').appendChild(t);
+  setTimeout(()=>t.remove(), type==='err' ? 5200 : 2600);
+}
+
+/* ========== Navigation ========== */
+const NAV = [['home','الرئيسية'],['orders','الطلبات'],['content','محتواي'],['clients','العميلات'],['calendar','التقويم'],['settings','الإعدادات']];
+const ui = {
+  q:'', status:'all', due:'all', view: (()=>{ try{return localStorage.getItem('ranastudio.view')||'kanban';}catch(e){return 'kanban';} })(),
+  archived:false, calMode:'month', calAnchor:today(), calSel:today(), clientQ:'', openClient:null
+};
+function route(){
+  const h = location.hash.replace(/^#/,'') || 'home';
+  const [name, id] = h.split('/');
+  return {name, id};
+}
+function go(h){ if(location.hash !== '#'+h) location.hash = h; else render(); }
+function renderNav(){
+  const r = route().name === 'p' ? 'orders' : route().name;
+  const links = NAV.map(([k,v]) => '<a class="tab" href="#'+k+'"'+(r===k?' aria-current="page"':'')+'>'+I[k]+'<span>'+v+'</span></a>').join('');
+  $('#tabbar').innerHTML = links;
+  $('#side').innerHTML = '<a class="brand" href="#home" aria-label="Rana Studio"><b dir="ltr"><span class="r1">Rana</span> <span class="r2">Studio</span></b><small>GRAPHIC DESIGN</small></a><a class="sync-pill" id="sync-pill-side" href="#settings" hidden></a>' + links +
+    '<button class="btn primary add" type="button" data-act="new-order">'+I.plus+'طلب جديد</button>';
+  setSync(sync.status);
+}
+function render(){
+  renderNav();
+  document.querySelector('.fab').hidden = route().name==='content';
+  const {name, id} = route();
+  const m = $('#main');
+  if(name==='p') m.innerHTML = viewDetail(id);
+  else if(name==='orders'){ m.innerHTML = viewOrders(); renderOrderResults(); }
+  else if(name==='clients'){ m.innerHTML = viewClients(); renderClientResults(); }
+  else if(name==='calendar') m.innerHTML = viewCalendar();
+  else if(name==='settings'){ m.innerHTML = viewSettings(); fillStorageInfo(); }
+  else if(name==='content'){ m.innerHTML = viewContent(); renderContentList(); }
+  else m.innerHTML = viewHome();
+}
+window.addEventListener('hashchange', ()=>{ render(); window.scrollTo(0,0); });
+
+/* ========== Home ========== */
+function homeBuckets(){
+  const t = today();
+  const act = activeProjects();
+  const dueToday = act.filter(p => p.due===t && !CLOSED.includes(p.status));
+  const late = act.filter(isOverdue).sort((a,b)=>a.due.localeCompare(b.due));
+  const followToday = db.clients.filter(c => c.followUp===t);
+  const followLate = db.clients.filter(isFollowLate);
+  const waiting = act.filter(p => p.status==='reply' || p.status==='preview');
+  const openRevs = db.revisions.filter(r => REV_OPEN.includes(r.status) && act.some(p=>p.id===r.projectId && !CLOSED.includes(p.status)));
+  return {dueToday, late, followToday, followLate, waiting, openRevs};
+}
+function viewHome(){
+  const act = activeProjects();
+  const b = homeBuckets();
+  const count = s => act.filter(p=>p.status===s).length;
+  const stats = [
+    ['total','إجمالي الطلبات', act.length, 'all','all'],
+    ['new','طلبات جديدة', count('new'), 'new','all'],
+    ['progress','قيد التنفيذ', count('progress'), 'progress','all'],
+    ['reply','بانتظار رد العميلة', count('reply'), 'reply','all'],
+    ['revisions','تحتاج تعديلات', count('revisions'), 'revisions','all'],
+    ['late','متأخرة عن التسليم', b.late.length, 'all','overdue'],
+    ['done','مكتملة', count('done'), 'done','all']
+  ];
+  const statHtml = stats.map(([k,l,n,s,d]) => {
+    const cls = k==='total' ? 'stat total' : (k==='late' && n>0 ? 'stat alert' : 'stat st st-'+k);
+    const dot = (k!=='total' && k!=='late') ? '<span class="dot"></span>' : '';
+    return '<button type="button" class="'+cls+'" data-act="goto-filter" data-status="'+s+'" data-due="'+d+'"><span class="n">'+n+'</span><span class="l">'+dot+l+'</span></button>';
+  }).join('');
+
+  const todayItems = [
+    ...b.dueToday.map(p => item('due', p, 'تسليم اليوم: '+p.title, clientOf(p).name)),
+    ...b.followToday.map(c => itemClient(c, 'متابعة اليوم مع '+c.name, phoneDisplay(c)))
+  ];
+  const attention = [
+    ...b.late.map(p => item('late', p, p.title, 'متأخر '+dayWord(diffDays(p.due,today()))+' · '+clientOf(p).name)),
+    ...b.followLate.map(c => itemClient(c, 'متابعة متأخرة: '+c.name, 'كان موعدها '+fmt(c.followUp))),
+    ...b.waiting.map(p => item('reply', p, p.title, ST[p.status]+' · '+clientOf(p).name))
+  ];
+  const n = b.dueToday.length + b.followToday.length, l = b.late.length + b.followLate.length;
+  const banner = (n||l) ? '<div class="notice '+(l?'danger':'warn')+'">'+I.bell+'<div><b>تذكير:</b> '+
+    (n? 'لديكِ '+n+' '+(n===1?'موعد':'مواعيد')+' اليوم. ' : '')+(l? l+' '+(l===1?'عنصر متأخر':'عناصر متأخرة')+' تحتاج متابعة.' : '')+'</div></div>' : '';
+  const empty = !db.projects.length ? '<div class="panel section"><div class="empty">'+I.emptyArt+'<b>لا توجد طلبات بعد</b><span>سجّلي أول طلب لتظهر هنا الإحصائيات ومهام اليوم.</span><div class="row" style="justify-content:center"><button class="btn primary" type="button" data-act="new-order">'+I.plus+'إضافة أول طلب</button><button class="btn" type="button" data-act="add-demo">تجربة ببيانات تجريبية</button></div></div></div>' : '';
+
+  return '<div class="page-head"><div><h1>أهلًا رنا</h1><p class="muted">'+esc(fmtLong(today()))+'</p></div></div>'+
+    (storageOk ? '' : '<div class="notice danger" style="margin-bottom:12px">'+I.alert+'<div>تخزين المتصفح غير متاح (قد يكون وضع التصفح الخاص مفعّلًا). البيانات لن تُحفظ.</div></div>')+
+    banner + (empty || (
+    '<div class="stats section" style="margin-top:14px">'+statHtml+'</div>'+
+    '<div class="grid2 section">'+
+      '<section><div class="section-head"><h2>مهامي اليوم</h2><span class="muted small">'+todayItems.length+'</span></div>'+
+        (todayItems.length ? '<div class="list">'+todayItems.join('')+'</div>' : '<div class="panel"><div class="empty compact">لا مواعيد تسليم أو متابعات اليوم.</div></div>')+'</section>'+
+      '<section><div class="section-head"><h2>تحتاج انتباهي</h2><span class="muted small">'+attention.length+'</span></div>'+
+        (attention.length ? '<div class="list">'+attention.join('')+'</div>' : '<div class="panel"><div class="empty compact">كل شيء تحت السيطرة، لا متأخرات ولا انتظار.</div></div>')+'</section>'+
+    '</div>'+
+    (b.openRevs.length ? '<section class="section"><div class="section-head"><h2>تعديلات لم تُنفّذ بعد</h2><span class="muted small">'+b.openRevs.length+'</span></div><div class="list">'+
+      b.openRevs.map(r => { const p = db.projects.find(x=>x.id===r.projectId); return '<a class="item" href="#p/'+p.id+'"><span class="kind late">'+I.edit+'</span><span class="grow"><span class="t">'+esc(r.desc)+'</span><span class="s">'+esc(p.title)+' · '+esc(REV[r.status])+'</span></span></a>'; }).join('')+'</div></section>' : '')
+  ));
+}
+function item(kind, p, t, s){
+  const ic = kind==='late' ? I.alert : kind==='reply' ? I.chat : I.clock;
+  return '<a class="item" href="#p/'+p.id+'"><span class="kind '+(kind==='late'?'late':kind==='reply'?'reply':'')+'">'+ic+'</span><span class="grow"><span class="t">'+esc(t)+'</span><span class="s">'+esc(s)+'</span></span>'+demoChip(p)+'</a>';
+}
+function itemClient(c, t, s){
+  return '<button type="button" class="item" style="border:0;border-bottom:1px solid var(--line);background:none;text-align:start;width:100%" data-act="open-client" data-id="'+c.id+'"><span class="kind follow">'+I.chat+'</span><span class="grow"><span class="t">'+esc(t)+'</span><span class="s ltr">'+esc(s)+'</span></span>'+demoChip(c)+'</button>';
+}
+
+/* ========== Orders ========== */
+function viewOrders(){
+  const stOpts = '<option value="all">كل الحالات</option>' + STATUSES.map(([k,v])=>'<option value="'+k+'"'+(ui.status===k?' selected':'')+'>'+v+'</option>').join('');
+  const dueOpts = [['all','كل المواعيد'],['overdue','المتأخرة'],['today','تسليم اليوم'],['week','خلال 7 أيام'],['nodate','بدون موعد']]
+    .map(([k,v])=>'<option value="'+k+'"'+(ui.due===k?' selected':'')+'>'+v+'</option>').join('');
+  return '<div class="page-head"><div><h1>الطلبات</h1><p class="muted small" id="orders-count"></p></div>'+
+    '<div class="seg" role="group" aria-label="طريقة العرض"><button type="button" data-act="view" data-v="kanban" aria-pressed="'+(ui.view==='kanban')+'">بطاقات</button><button type="button" data-act="view" data-v="table" aria-pressed="'+(ui.view==='table')+'">جدول</button></div></div>'+
+    '<div class="toolbar">'+
+      '<label class="search">'+I.search+'<input type="search" id="q" placeholder="ابحثي باسم العميلة أو المشروع" value="'+esc(ui.q)+'" aria-label="بحث"></label>'+
+      '<select id="f-status" aria-label="تصفية حسب الحالة">'+stOpts+'</select>'+
+      '<select id="f-due" aria-label="تصفية حسب موعد التسليم">'+dueOpts+'</select>'+
+      '<label class="toggle"><input type="checkbox" id="f-arch"'+(ui.archived?' checked':'')+'> المؤرشفة</label>'+
+    '</div><div id="results"></div>';
+}
+function filteredProjects(){
+  const t = today(), wk = addDays(t,7);
+  const q = ui.q.trim().toLowerCase();
+  const qd = toLatinDigits(q).replace(/\D/g,'');
+  return db.projects.filter(p => {
+    if(!!p.archived !== ui.archived) return false;
+    if(ui.status!=='all' && p.status!==ui.status) return false;
+    if(ui.due==='overdue' && !isOverdue(p)) return false;
+    if(ui.due==='today' && p.due!==t) return false;
+    if(ui.due==='week' && !(p.due && p.due>=t && p.due<=wk)) return false;
+    if(ui.due==='nodate' && p.due) return false;
+    if(q){
+      const c = clientOf(p);
+      const hay = (p.title+' '+c.name).toLowerCase();
+      if(!hay.includes(q) && !(qd.length>=3 && (c.cc+c.num).includes(qd))) return false;
+    }
+    return true;
+  }).sort((a,b)=>{
+    if(a.due && b.due) return a.due.localeCompare(b.due);
+    if(a.due) return -1; if(b.due) return 1;
+    return (b.createdAt||'').localeCompare(a.createdAt||'');
+  });
+}
+function renderOrderResults(){
+  const box = $('#results'); if(!box) return;
+  const list = filteredProjects();
+  const filtered = ui.q || ui.status!=='all' || ui.due!=='all';
+  $('#orders-count').textContent = list.length + ' طلب' + (ui.archived ? ' مؤرشف' : '');
+  if(!db.projects.length){
+    box.innerHTML = '<div class="panel"><div class="empty">'+I.emptyArt+'<b>لا توجد طلبات بعد</b><span>ابدئي بتسجيل أول طلب، وسيظهر هنا في عمود «طلب جديد».</span><button class="btn primary" type="button" data-act="new-order">'+I.plus+'طلب جديد</button></div></div>';
+    return;
+  }
+  if(!list.length){
+    box.innerHTML = '<div class="panel"><div class="empty">'+I.emptyArt+'<b>'+(ui.archived?'لا توجد مشاريع مؤرشفة':'لا نتائج مطابقة')+'</b><span>'+(filtered?'جرّبي تغيير البحث أو الفلاتر.':'')+'</span>'+(filtered?'<button class="btn" type="button" data-act="clear-filters">مسح الفلاتر</button>':'')+'</div></div>';
+    return;
+  }
+  if(ui.view==='table'){
+    box.innerHTML = '<div class="table-wrap"><table><thead><tr><th>المشروع</th><th>العميلة</th><th>الحالة</th><th>التسليم</th><th>التعديلات</th><th>الدفع</th><th>السعر</th></tr></thead><tbody>'+
+      list.map(p => { const c = clientOf(p), ro = revOpenCount(p.id), rt = revsOf(p.id).length;
+        return '<tr data-open="'+p.id+'"><td><b>'+esc(p.title)+'</b> '+demoChip(p)+'<div class="muted small">'+esc(p.service)+'</div></td><td>'+esc(c.name)+'</td><td>'+statusSelect(p)+'</td><td>'+dueChip(p)+'</td><td class="num">'+(rt? (ro? '<span class="chip'+(CLOSED.includes(p.status)?'':' late')+'">'+ro+' معلّق</span> ' : '')+'<span class="muted small">من '+rt+'</span>' : '<span class="muted">—</span>')+'</td><td>'+esc(PAYM[p.payment]||'—')+'</td><td class="num">'+money(p.price)+'</td></tr>'; }).join('')+
+      '</tbody></table></div>';
+    return;
+  }
+  const cols = (ui.status==='all' ? STATUSES : STATUSES.filter(([k])=>k===ui.status));
+  box.innerHTML = '<div class="board">'+cols.map(([k,v])=>{
+    const items = list.filter(p=>p.status===k);
+    return '<section class="col" aria-label="'+v+'"><div class="col-head">'+badge(k)+'<span class="cnt">'+items.length+'</span></div>'+
+      (items.length ? items.map(card).join('') : '<div class="empty compact">لا طلبات هنا</div>')+'</section>';
+  }).join('')+'</div>';
+}
+function card(p){
+  const c = clientOf(p), ro = revOpenCount(p.id);
+  const idx = STATUSES.findIndex(s=>s[0]===p.status);
+  const next = CLOSED.includes(p.status) ? null : STATUSES[idx+1];
+  return '<article class="card'+(isOverdue(p)?' is-late':'')+(p.status==='cancelled'?' is-cancelled':'')+'" data-open="'+p.id+'">'+
+    '<div class="row"><span class="muted small">'+esc(p.service)+'</span><span class="spacer"></span>'+demoChip(p)+'</div>'+
+    '<h4>'+esc(p.title)+'</h4><span class="muted small">'+esc(c.name)+'</span>'+
+    '<div class="meta">'+dueChip(p)+(ro?'<span class="chip'+(CLOSED.includes(p.status)?'':' late')+'">'+ro+' تعديل معلّق</span>':'')+(p.payment==='unpaid'?'<span class="chip">لم يُدفع</span>':'')+'</div>'+
+    '<div class="foot">'+statusSelect(p)+(next?'<button class="icon-btn" type="button" data-act="next-status" data-id="'+p.id+'" title="نقل إلى: '+next[1]+'" aria-label="نقل إلى: '+next[1]+'">'+I.next+'</button>':'')+'</div>'+
+  '</article>';
+}
+function askCloseRevs(id, n){
+  confirmCb = () => { revsOf(id).filter(r=>REV_OPEN.includes(r.status)).forEach(r=>{ r.status='done'; if(!r.doneDate) r.doneDate = today(); r.updatedAt = nowIso(); }); logEvent(id, 'اعتُبرت التعديلات المفتوحة منفّذة عند اكتمال الطلب'); save('تم تحديث التعديلات'); render(); };
+  openSheet('الطلب مكتمل', '<div class="form"><p style="margin:0">في هذا الطلب '+(n===1?'تعديل واحد لم يُغلق':n+' تعديلات لم تُغلق')+'. تبين '+(n===1?'تعتبرينه':'تعتبرينها')+' «تم التنفيذ»؟</p><div class="form-actions"><button class="btn primary" type="button" data-act="confirm-ok">نعم، تم تنفيذها</button><button class="btn" type="button" data-act="close-sheet">اتركيها</button></div></div>');
+}
+function setStatus(id, st){
+  const p = db.projects.find(x=>x.id===id); if(!p || p.status===st) return;
+  const old = p.status; p.status = st; touch(p);
+  if(st==='done' && !p.completedAt) p.completedAt = today();
+  logEvent(p.id, 'تغيّرت الحالة من «'+ST[old]+'» إلى «'+ST[st]+'»');
+  save('نُقل إلى «'+ST[st]+'»');
+}
+
+/* ========== Order form ========== */
+function orderForm(p){
+  const c = p ? clientOf(p) : {name:'',cc:'966',num:'',followUp:''};
+  const v = (k, d='') => esc(p ? (p[k] ?? d) : d);
+  const opt = (arr, cur) => arr.map(a => { const [k,l] = Array.isArray(a)?a:[a,a]; return '<option value="'+esc(k)+'"'+(k===cur?' selected':'')+'>'+esc(l)+'</option>'; }).join('');
+  return '<form class="form" id="order-form" novalidate data-id="'+(p?p.id:'')+'">'+
+    '<fieldset class="fieldset"><legend>العميلة</legend>'+
+      '<div class="field" data-f="clientName"><label for="o-client">اسم العميلة <span class="req">*</span></label><input id="o-client" name="clientName" autocomplete="off" list="client-names" value="'+esc(c.name)+'" required><datalist id="client-names">'+db.clients.map(x=>'<option value="'+esc(x.name)+'">').join('')+'</datalist><span class="err"></span></div>'+
+      '<div class="field" data-f="phone"><span class="lbl">رقم الجوال <span class="req">*</span></span><div class="phone"><label class="cc"><span>+</span><input id="o-cc" name="cc" inputmode="numeric" value="'+esc(c.cc||'966')+'" aria-label="مفتاح الدولة" maxlength="4"></label><input id="o-phone" name="phone" type="tel" inputmode="tel" placeholder="5XXXXXXXX" value="'+esc(c.num)+'" aria-label="رقم الجوال"></div><span class="hint">يُقبل الرقم بصيغة 05… أو 5… أو مع المفتاح، ويُعالج تلقائيًا.</span><span class="err"></span></div>'+
+      '<button type="button" class="btn wa" data-act="wa-from-form">'+I.wa+'فتح محادثة واتساب</button>'+
+      '<div class="field"><label for="o-follow">موعد المتابعة مع العميلة</label><input id="o-follow" name="followUp" type="date" value="'+esc(c.followUp||'')+'"></div>'+
+    '</fieldset>'+
+    '<div class="fgrid">'+
+      '<div class="field full" data-f="title"><label for="o-title">اسم المشروع <span class="req">*</span></label><input id="o-title" name="title" value="'+v('title')+'" required><span class="err"></span></div>'+
+      '<div class="field"><label for="o-service">نوع الخدمة</label><select id="o-service" name="service">'+opt(SERVICES, p?p.service:SERVICES[0])+'</select></div>'+
+      '<div class="field"><label for="o-status">الحالة</label><select id="o-status" name="status">'+opt(STATUSES, p?p.status:'new')+'</select></div>'+
+      '<div class="field full"><label for="o-desc">وصف الطلب والتفاصيل المطلوبة</label><textarea id="o-desc" name="desc">'+v('desc')+'</textarea></div>'+
+      '<div class="field"><label for="o-received">تاريخ استلام الطلب</label><input id="o-received" name="received" type="date" value="'+v('received', today())+'"></div>'+
+      '<div class="field" data-f="due"><label for="o-due">موعد التسليم النهائي</label><input id="o-due" name="due" type="date" value="'+v('due')+'"><span class="err"></span></div>'+
+      '<div class="field" data-f="price"><label for="o-price">السعر المتفق عليه (ر.س)</label><input id="o-price" name="price" inputmode="decimal" value="'+v('price')+'"><span class="err"></span></div>'+
+      '<div class="field"><label for="o-pay">حالة الدفع</label><select id="o-pay" name="payment">'+opt(PAY, p?p.payment:'unpaid')+'</select></div>'+
+      '<div class="field full" data-f="link"><span class="lbl">روابط المشروع</span><div class="links-box" id="links-box">'+(p&&parseLinks(p.link).length?parseLinks(p.link):[{label:'',url:''}]).map(linkRow).join('')+'</div>'+
+        '<datalist id="link-labels">'+LINK_LABELS.map(x=>'<option value="'+esc(x)+'">').join('')+'</datalist>'+
+        '<button class="btn sm" type="button" data-act="link-add" style="align-self:flex-start">'+I.plus+'إضافة رابط</button><span class="err"></span></div>'+
+      '<div class="field full"><label for="o-notes">ملاحظات خاصة بي</label><textarea id="o-notes" name="notes">'+v('notes')+'</textarea></div>'+
+    '</div>'+
+    '<div class="form-actions"><button class="btn primary" type="submit">'+(p?'حفظ التغييرات':'حفظ الطلب')+'</button><button class="btn" type="button" data-act="close-sheet">إلغاء</button></div>'+
+  '</form>';
+}
+function formLinks(form){
+  const L = [...form.querySelectorAll('[name=linkLabel]')].map(i=>i.value), U = [...form.querySelectorAll('[name=linkUrl]')].map(i=>i.value.trim());
+  return U.map((u,i)=>({label:(L[i]||'').trim(), url:u})).filter(x=>x.url);
+}
+function setErr(form, f, msg){
+  const el = form.querySelector('[data-f="'+f+'"]'); if(!el) return;
+  el.classList.toggle('invalid', !!msg); el.querySelector('.err').textContent = msg||'';
+}
+function readOrderForm(form){
+  const fd = Object.fromEntries(new FormData(form));
+  const ph = normalizePhone(fd.cc, fd.phone);
+  let ok = true;
+  const errs = {
+    clientName: fd.clientName.trim() ? '' : 'اسم العميلة مطلوب',
+    title: fd.title.trim() ? '' : 'اسم المشروع مطلوب',
+    phone: phoneError(ph.cc, ph.num),
+    due: (fd.due && fd.received && fd.due < fd.received) ? 'موعد التسليم قبل تاريخ الاستلام' : '',
+    price: (fd.price.trim() && isNaN(Number(toLatinDigits(fd.price).replace(/[,،\s]/g,'')))) ? 'اكتبي السعر أرقامًا فقط' : '',
+    link: formLinks(form).some(l=>!URL_RE.test(l.url)) ? 'كل رابط يجب أن يبدأ بـ https://' : ''
+  };
+  for(const [k,m] of Object.entries(errs)){ setErr(form,k,m); if(m) ok=false; }
+  return {ok, fd, ph, errs};
+}
+function submitOrder(form){
+  const {ok, fd, ph, errs} = readOrderForm(form);
+  if(!ok){
+    const first = Object.keys(errs).find(k=>errs[k]);
+    const el = form.querySelector('[data-f="'+first+'"] input, [data-f="'+first+'"] select');
+    if(el) el.focus();
+    toast('راجعي الحقول المحدّدة بالأحمر', 'err');
+    return;
+  }
+  const id = form.dataset.id;
+  const price = fd.price.trim() ? Number(toLatinDigits(fd.price).replace(/[,،\s]/g,'')) : '';
+  let p = id ? db.projects.find(x=>x.id===id) : null;
+  let client;
+  if(p){
+    client = db.clients.find(c=>c.id===p.clientId);
+    if(!client){ client = {id:uid(), createdAt:nowIso()}; db.clients.push(client); p.clientId = client.id; }
+  }else{
+    client = db.clients.find(c => c.cc+c.num === ph.full);
+    if(!client){ client = {id:uid(), createdAt:nowIso(), notes:''}; db.clients.push(client); }
+  }
+  const followChanged = (client.followUp||'') !== (fd.followUp||'');
+  Object.assign(client, {name:fd.clientName.trim(), cc:ph.cc, num:ph.num, followUp:fd.followUp||''});
+  if(followChanged && fd.followUp) logEvent(null, 'حُدّد موعد متابعة '+fmt(fd.followUp), client.id);
+
+  const data = {clientId:client.id, title:fd.title.trim(), service:fd.service, desc:fd.desc.trim(), received:fd.received||'', due:fd.due||'',
+    price, payment:fd.payment, link:serializeLinks(formLinks(form)), notes:fd.notes.trim(), status:fd.status};
+  if(p){
+    const changes = [];
+    if(p.status!==data.status) changes.push('الحالة إلى «'+ST[data.status]+'»');
+    if(p.due!==data.due) changes.push('موعد التسليم إلى '+(data.due?fmt(data.due):'بدون موعد'));
+    if(p.payment!==data.payment) changes.push('الدفع إلى «'+PAYM[data.payment]+'»');
+    if(String(p.price)!==String(data.price)) changes.push('السعر إلى '+money(data.price));
+    Object.assign(p, data); touch(p);
+    if(data.status==='done' && !p.completedAt) p.completedAt = today();
+    logEvent(p.id, changes.length ? 'تعديل بيانات الطلب: '+changes.join('، ') : 'تعديل بيانات الطلب');
+    save('تم حفظ التغييرات');
+  }else{
+    p = Object.assign({id:uid(), createdAt:nowIso(), updatedAt:nowIso(), archived:false}, data);
+    if(client.demo) p.demo = true;
+    db.projects.push(p);
+    logEvent(p.id, 'تسجيل الطلب بحالة «'+ST[p.status]+'»');
+    save('تم حفظ الطلب');
+    askPersist();
+  }
+  closeSheet();
+  go('p/'+p.id);
+}
+
+/* ========== Detail ========== */
+function viewDetail(id){
+  const p = db.projects.find(x=>x.id===id);
+  if(!p) return '<button class="back" type="button" data-act="back">'+I.back+'رجوع</button><div class="panel"><div class="empty">'+I.emptyArt+'<b>هذا الطلب غير موجود</b><span>ربما حُذف.</span><a class="btn" href="#orders">كل الطلبات</a></div></div>';
+  const c = clientOf(p);
+  const revs = revsOf(p.id);
+  const rOpen = revs.filter(r=>REV_OPEN.includes(r.status)).length;
+  const rDone = revs.length - rOpen;
+  const tasks = tasksOf(p.id);
+  const evs = db.events.filter(e=>e.projectId===p.id).sort((a,b)=>b.at.localeCompare(a.at));
+  const tDone = tasks.filter(t=>t.done).length;
+
+  return '<button class="back" type="button" data-act="back">'+I.back+'الطلبات</button>'+
+  '<div class="detail-head">'+
+    '<div class="row"><span class="muted small">'+esc(p.service)+'</span>'+demoChip(p)+(p.archived?'<span class="chip">مؤرشف</span>':'')+'</div>'+
+    '<h1>'+esc(p.title)+'</h1>'+
+    '<div class="row">'+statusSelect(p)+dueChip(p)+'</div>'+
+    '<div class="acts">'+
+      (c.num?'<a class="btn wa" href="'+esc(waUrl(c))+'" target="_blank" rel="noopener noreferrer">'+I.wa+'واتساب '+esc(c.name)+'</a>':'')+
+      '<button class="btn" type="button" data-act="edit-order" data-id="'+p.id+'">'+I.edit+'تعديل البيانات</button>'+
+      (CLOSED.includes(p.status) || p.archived ? '<button class="btn" type="button" data-act="archive" data-id="'+p.id+'">'+I.archive+(p.archived?'إلغاء الأرشفة':'أرشفة')+'</button>' : '')+
+      '<button class="btn danger" type="button" data-act="delete-order" data-id="'+p.id+'">'+I.trash+'حذف</button>'+
+    '</div>'+
+  '</div>'+
+  '<div class="grid2 section">'+
+    '<div class="stack">'+
+      '<section class="panel"><div class="facts">'+
+        '<div class="fact"><span class="k">العميلة</span><span class="v">'+esc(c.name)+'</span></div>'+
+        '<div class="fact"><span class="k">الجوال</span><span class="v ltr">'+esc(c.num?phoneDisplay(c):'—')+'</span></div>'+
+        '<div class="fact"><span class="k">تاريخ الاستلام</span><span class="v">'+esc(fmt(p.received,{day:'numeric',month:'long',year:'numeric'}))+'</span></div>'+
+        '<div class="fact"><span class="k">موعد التسليم</span><span class="v">'+esc(fmt(p.due,{day:'numeric',month:'long',year:'numeric'}))+'</span></div>'+
+        '<div class="fact"><span class="k">السعر</span><span class="v num">'+money(p.price)+'</span></div>'+
+        '<div class="fact"><span class="k">الدفع</span><select data-change="payment" data-id="'+p.id+'" aria-label="حالة الدفع" style="min-height:36px;padding:4px 10px;font-size:14px">'+PAY.map(([k,v])=>'<option value="'+k+'"'+(k===p.payment?' selected':'')+'>'+v+'</option>').join('')+'</select></div>'+
+        '<div class="fact wide"><span class="k">روابط المشروع</span>'+(parseLinks(p.link).length?'<div class="link-list">'+parseLinks(p.link).map((l,i)=>'<div class="link-item"><span class="li-ic">'+I.link+'</span><a href="'+esc(l.url)+'" target="_blank" rel="noopener noreferrer"><b>'+esc(l.label||('رابط '+(i+1)))+'</b><span class="ltr">'+esc(l.url)+'</span></a><button class="icon-btn" type="button" data-act="link-del" data-id="'+p.id+'" data-i="'+i+'" aria-label="حذف الرابط">'+I.trash+'</button></div>').join('')+'</div>':'<span class="v muted">لم يُضف رابط بعد</span>')+
+          '<form class="link-add" data-form="link" data-id="'+p.id+'" novalidate><input name="label" list="link-labels-d" placeholder="اسم الرابط" aria-label="اسم الرابط"><input name="url" type="url" inputmode="url" dir="ltr" placeholder="https://" aria-label="الرابط"><button class="btn sm" type="submit">إضافة</button></form>'+
+          '<datalist id="link-labels-d">'+LINK_LABELS.map(x=>'<option value="'+esc(x)+'">').join('')+'</datalist></div>'+
+        '<div class="fact wide"><span class="k">متابعة العميلة</span><div class="followbox"><input type="date" data-change="follow" data-id="'+c.id+'" value="'+esc(c.followUp||'')+'" aria-label="موعد المتابعة">'+followChip(c)+'</div></div>'+
+      '</div></section>'+
+      shareSection(p)+
+      '<section class="panel"><h3>وصف الطلب الأصلي</h3><p class="prose '+(p.desc?'':'muted')+'" style="margin-top:6px">'+esc(p.desc||'لا يوجد وصف.')+'</p></section>'+
+
+      '<section class="panel"><div class="section-head"><h3>سجل التعديلات</h3><button class="btn primary sm" type="button" data-act="add-rev" data-id="'+p.id+'">'+I.plus+'إضافة تعديل</button></div>'+
+        '<div class="counts" style="margin-bottom:10px"><span class="chip">الإجمالي '+revs.length+'</span><span class="chip '+(rOpen?'late':'')+'">معلّق '+rOpen+'</span><span class="chip ok">مُنفّذ '+rDone+'</span></div>'+
+        (revs.length ? '<div class="stack">'+revs.map((r,i)=>revCard(r,i)).reverse().join('')+'</div>' : '<div class="empty compact">لا توجد تعديلات مسجّلة. عند طلب العميلة تعديلًا، اضغطي «إضافة تعديل».</div>')+
+      '</section>'+
+    '</div>'+
+    '<div class="stack">'+
+      '<section class="panel"><div class="section-head"><h3>المهام</h3><span class="muted small num">'+tDone+' / '+tasks.length+'</span></div>'+
+        (tasks.length ? tasks.map(t=>'<div class="task'+(t.done?' done':'')+'"><input type="checkbox" id="t-'+t.id+'" data-change="task" data-id="'+t.id+'"'+(t.done?' checked':'')+'><label for="t-'+t.id+'">'+esc(t.text)+'</label><button class="icon-btn" type="button" data-act="del-task" data-id="'+t.id+'" aria-label="حذف المهمة" style="width:32px;height:32px">'+I.trash+'</button></div>').join('') : '<p class="muted small" style="margin:0">أضيفي خطوات العمل لتتابعي إنجازها.</p>')+
+        '<form class="addline" data-form="task" data-id="'+p.id+'"><input id="new-task" name="text" placeholder="مهمة جديدة…" aria-label="مهمة جديدة" autocomplete="off"><button class="btn sm" type="submit">إضافة</button></form>'+
+      '</section>'+
+      '<section class="panel"><div class="section-head"><h3>ملاحظاتي</h3><span class="saved" id="notes-saved">محفوظ</span></div><textarea id="p-notes" data-input="notes" data-id="'+p.id+'" placeholder="ملاحظات خاصة بكِ، تُحفظ تلقائيًا">'+esc(p.notes||'')+'</textarea></section>'+
+      '<section class="panel"><h3 style="margin-bottom:10px">السجل الزمني</h3>'+
+        (evs.length ? '<ol class="timeline">'+evs.map(e=>'<li>'+esc(e.text)+'<time>'+esc(fmtTime(e.at))+'</time></li>').join('')+'</ol>' : '<p class="muted small">لا أحداث بعد.</p>')+
+      '</section>'+
+    '</div>'+
+  '</div>';
+}
+function revCard(r, i){
+  const open = REV_OPEN.includes(r.status);
+  return '<article class="rev'+(open?' open':'')+'">'+
+    '<div class="rev-top"><span class="no">التعديل '+(i+1)+'</span>'+
+      '<select class="status-select st '+REV_ST_CLASS[r.status]+'" data-change="rev-status" data-id="'+r.id+'" aria-label="حالة التعديل">'+REV_STATUSES.map(([k,v])=>'<option value="'+k+'"'+(k===r.status?' selected':'')+'>'+v+'</option>').join('')+'</select>'+
+      '<span class="spacer"></span><button class="icon-btn" type="button" data-act="edit-rev" data-id="'+r.id+'" aria-label="تعديل" style="width:32px;height:32px">'+I.edit+'</button>'+
+    '</div>'+
+    '<p class="prose">'+esc(r.desc)+'</p>'+
+    '<div class="dates"><span>الاستلام: '+esc(fmt(r.received))+'</span>'+(r.doneDate?'<span>الإنجاز: '+esc(fmt(r.doneDate))+'</span>':'')+'</div>'+
+    (r.notes?'<p class="prose muted small">'+esc(r.notes)+'</p>':'')+
+    (r.link?'<a class="small ltr" href="'+esc(r.link)+'" target="_blank" rel="noopener noreferrer">'+esc(r.link)+'</a>':'')+
+  '</article>';
+}
+function revForm(pid, r){
+  const v = (k,d='') => esc(r ? (r[k]??d) : d);
+  return '<form class="form" id="rev-form" novalidate data-pid="'+pid+'" data-id="'+(r?r.id:'')+'">'+
+    '<div class="field" data-f="desc"><label for="r-desc">وصف التعديل بالتفصيل <span class="req">*</span></label><textarea id="r-desc" name="desc">'+v('desc')+'</textarea><span class="err"></span></div>'+
+    '<div class="fgrid">'+
+      '<div class="field"><label for="r-received">تاريخ استلام طلب التعديل</label><input id="r-received" type="date" name="received" value="'+v('received',today())+'"></div>'+
+      '<div class="field"><label for="r-status">الحالة</label><select id="r-status" name="status">'+REV_STATUSES.map(([k,l])=>'<option value="'+k+'"'+(k===(r?r.status:'new')?' selected':'')+'>'+l+'</option>').join('')+'</select></div>'+
+      '<div class="field"><label for="r-done">تاريخ إنجاز التعديل</label><input id="r-done" type="date" name="doneDate" value="'+v('doneDate')+'"><span class="hint">يُملأ تلقائيًا عند اختيار «تم التنفيذ».</span></div>'+
+      '<div class="field" data-f="link"><label for="r-link">رابط المعاينة بعد التعديل</label><input id="r-link" type="url" dir="ltr" name="link" placeholder="https://" value="'+v('link')+'"><span class="err"></span></div>'+
+      '<div class="field full"><label for="r-notes">ملاحظات إضافية</label><textarea id="r-notes" name="notes" style="min-height:70px">'+v('notes')+'</textarea></div>'+
+    '</div>'+
+    (!r ? '<label class="toggle" style="color:var(--ink)"><input type="checkbox" name="moveStatus" checked> نقل المشروع إلى «تعديلات مطلوبة»</label>' : '')+
+    '<div class="form-actions"><button class="btn primary" type="submit">'+(r?'حفظ التعديل':'إضافة التعديل')+'</button>'+(r?'<button class="btn danger" type="button" data-act="del-rev" data-id="'+r.id+'">حذف</button>':'<button class="btn" type="button" data-act="close-sheet">إلغاء</button>')+'</div>'+
+  '</form>';
+}
+function submitRev(form){
+  const fd = Object.fromEntries(new FormData(form));
+  const errs = {desc: fd.desc.trim() ? '' : 'اكتبي وصف التعديل', link: (fd.link.trim() && !/^https?:\/\/\S+\.\S+/i.test(fd.link.trim())) ? 'الرابط يجب أن يبدأ بـ https://' : ''};
+  let ok = true; for(const [k,m] of Object.entries(errs)){ setErr(form,k,m); if(m) ok=false; }
+  if(!ok){ toast('راجعي الحقول المحدّدة بالأحمر','err'); return; }
+  const pid = form.dataset.pid, id = form.dataset.id;
+  const p = db.projects.find(x=>x.id===pid);
+  let doneDate = fd.doneDate || '';
+  if(['done','sent','approved'].includes(fd.status) && !doneDate) doneDate = today();
+  const data = {desc:fd.desc.trim(), received:fd.received||today(), status:fd.status, doneDate, link:fd.link.trim(), notes:fd.notes.trim()};
+  if(id){
+    const r = db.revisions.find(x=>x.id===id);
+    const no = revsOf(pid).indexOf(r)+1;
+    if(r.status!==data.status) logEvent(pid, 'التعديل '+no+': الحالة «'+REV[data.status]+'»');
+    else logEvent(pid, 'تحديث تفاصيل التعديل '+no);
+    Object.assign(r, data, {updatedAt:nowIso()});
+    save('تم حفظ التعديل');
+  }else{
+    const r = Object.assign({id:uid(), projectId:pid, createdAt:nowIso(), updatedAt:nowIso()}, data);
+    if(p.demo) r.demo = true;
+    db.revisions.push(r);
+    const no = revsOf(pid).length;
+    logEvent(pid, 'طلب تعديل جديد ('+no+'): '+data.desc.slice(0,60)+(data.desc.length>60?'…':''));
+    if(fd.moveStatus && p.status!=='revisions'){ const old=p.status; p.status='revisions'; logEvent(pid,'تغيّرت الحالة من «'+ST[old]+'» إلى «'+ST.revisions+'»'); }
+    touch(p);
+    save('أُضيف التعديل رقم '+no);
+  }
+  closeSheet(); render();
+}
+
+/* ========== Content (محتواي) ========== */
+const CHANNELS = [
+  {group:'تيك توك', items:[['tiktok','منشور'],['tiktokStory','قصة']]},
+  {group:'إنستقرام', items:[['igPost','منشور'],['igStory','قصة']]},
+  {group:'واتساب', items:[['waStatus','حالة']]}
+];
+const CH_KEYS = CHANNELS.flatMap(g=>g.items.map(i=>i[0]));
+const chDone = c => CH_KEYS.filter(k=>c[k]).length;
+ui.cq2 = ''; ui.cf = 'all';
+function viewContent(){
+  const all = db.content, total = all.length;
+  const none = all.filter(c=>!chDone(c)).length, full = all.filter(c=>chDone(c)===CH_KEYS.length).length;
+  const f = [['all','الكل',total],['none','لم تُنشر',none],['partial','ناقصة',total-none-full],['full','نُشرت في الكل',full]];
+  return '<div class="page-head"><div><h1>محتواي</h1><p class="muted small">أفكار المحتوى وأين نشرتِها</p></div></div>'+
+    (sync.missingContent ? '<div class="notice warn" style="margin-bottom:12px">'+I.alert+'<div>محتواي محفوظ على هذا الجهاز فقط حتى تشغّلي ملف التحديث <span class="ltr">rana-studio-setup.sql</span> في Supabase.</div></div>' : '')+
+    '<form class="panel content-add" id="content-form" novalidate>'+
+      '<div class="field" data-f="title"><label for="ct-title">اسم الفكرة</label><input id="ct-title" name="title" autocomplete="off" placeholder="مثال: صفحة مبادرة القراءة"><span class="err"></span></div>'+
+      '<div class="field" data-f="link"><label for="ct-link">الرابط</label><input id="ct-link" name="link" type="url" inputmode="url" dir="ltr" placeholder="https://"><span class="err"></span></div>'+
+      '<div class="field"><span class="lbl">تحتاج قاعدة بيانات؟</span><div class="seg yn" role="radiogroup" aria-label="تحتاج قاعدة بيانات؟"><button type="button" role="radio" data-act="ct-db" data-v="1" aria-pressed="false">نعم</button><button type="button" role="radio" data-act="ct-db" data-v="0" aria-pressed="true">لا</button></div></div>'+
+      '<button class="btn primary" type="submit">'+I.plus+'إضافة الفكرة</button>'+
+    '</form>'+
+    '<div class="toolbar section"><label class="search">'+I.search+'<input type="search" id="cq2" placeholder="ابحثي باسم الفكرة" value="'+esc(ui.cq2)+'" aria-label="بحث في المحتوى"></label>'+
+      '<div class="seg" role="group" aria-label="تصفية">'+f.map(([k,l,n])=>'<button type="button" data-act="ct-filter" data-v="'+k+'" aria-pressed="'+(ui.cf===k)+'">'+l+' <span class="num muted">'+n+'</span></button>').join('')+'</div></div>'+
+    '<div id="content-list"></div>';
+}
+function renderContentList(){
+  const box = $('#content-list'); if(!box) return;
+  const q = ui.cq2.trim().toLowerCase();
+  const list = db.content.filter(c=>{
+    const d = chDone(c);
+    if(ui.cf==='none' && d) return false;
+    if(ui.cf==='partial' && (d===0 || d===CH_KEYS.length)) return false;
+    if(ui.cf==='full' && d!==CH_KEYS.length) return false;
+    return !q || c.title.toLowerCase().includes(q);
+  }).sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''));
+  if(!db.content.length){ box.innerHTML = '<div class="panel"><div class="empty">'+I.emptyArt+'<b>لا توجد أفكار بعد</b><span>أضيفي أول فكرة من الأعلى، ثم علّمي على المنصات التي نشرتِها فيها.</span></div></div>'; return; }
+  if(!list.length){ box.innerHTML = '<div class="panel"><div class="empty compact">لا نتائج مطابقة.</div></div>'; return; }
+  box.innerHTML = '<div class="content-grid">'+list.map(c=>{
+    const d = chDone(c);
+    return '<article class="ct-card'+(d===CH_KEYS.length?' all':'')+'">'+
+      '<div class="ct-top"><div class="grow" style="min-width:0"><h3>'+esc(c.title)+'</h3>'+
+        (c.link?'<a class="ct-link ltr" href="'+esc(c.link)+'" target="_blank" rel="noopener noreferrer">'+esc(c.link.replace(/^https?:\/\//,''))+'</a>':'<span class="muted small">بدون رابط</span>')+'</div>'+
+        '<button class="icon-btn" type="button" data-act="ct-edit" data-id="'+c.id+'" aria-label="تعديل الفكرة">'+I.edit+'</button></div>'+
+      '<div class="row"><span class="chip '+(c.needsDb?'today':'')+'">'+(c.needsDb?'تحتاج قاعدة بيانات':'بدون قاعدة بيانات')+'</span><span class="chip '+(d===CH_KEYS.length?'ok':'')+'"><span class="num">'+d+' / '+CH_KEYS.length+'</span>&nbsp;نُشرت</span>'+demoChip(c)+'</div>'+
+      '<div class="ch-groups">'+CHANNELS.map(g=>'<div class="ch-group"><span class="ch-name">'+g.group+'</span><div class="ch-btns">'+g.items.map(([k,l])=>'<button type="button" class="ch'+(c[k]?' on':'')+'" data-act="ct-toggle" data-id="'+c.id+'" data-k="'+k+'" aria-pressed="'+!!c[k]+'"><span class="tick">'+(c[k]?'✓':'')+'</span>'+l+'</button>').join('')+'</div></div>').join('')+'</div>'+
+    '</article>';
+  }).join('')+'</div>';
+}
+function contentEditForm(c){
+  return '<form class="form" id="content-edit-form" novalidate data-id="'+c.id+'">'+
+    '<div class="field" data-f="title"><label for="ce-title">اسم الفكرة</label><input id="ce-title" name="title" value="'+esc(c.title)+'"><span class="err"></span></div>'+
+    '<div class="field" data-f="link"><label for="ce-link">الرابط</label><input id="ce-link" name="link" type="url" dir="ltr" value="'+esc(c.link)+'" placeholder="https://"><span class="err"></span></div>'+
+    '<div class="field"><label for="ce-db">تحتاج قاعدة بيانات؟</label><select id="ce-db" name="needsDb"><option value="1"'+(c.needsDb?' selected':'')+'>نعم</option><option value="0"'+(c.needsDb?'':' selected')+'>لا</option></select></div>'+
+    '<div class="field"><label for="ce-notes">ملاحظات</label><textarea id="ce-notes" name="notes" style="min-height:70px">'+esc(c.notes||'')+'</textarea></div>'+
+    '<div class="form-actions"><button class="btn primary" type="submit">حفظ</button><button class="btn danger" type="button" data-act="ct-del" data-id="'+c.id+'">حذف</button></div>'+
+  '</form>';
+}
+function readContentForm(f){
+  const title = f.title.value.trim(), link = f.link.value.trim();
+  const e1 = title ? '' : 'اكتبي اسم الفكرة', e2 = (link && !URL_RE.test(link)) ? 'الرابط يجب أن يبدأ بـ https://' : '';
+  setErr(f,'title',e1); setErr(f,'link',e2);
+  if(e1||e2){ toast('راجعي الحقول المحدّدة بالأحمر','err'); return null; }
+  return {title, link};
+}
+
+/* ========== Share order progress with the client ========== */
+function newShareToken(){ const a = new Uint8Array(24); crypto.getRandomValues(a); return btoa(String.fromCharCode(...a)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
+function trackUrl(p){
+  const c = syncCfg(); if(!p.shareToken || !c.url || !c.key) return '';
+  const m = c.url.match(/^https:\/\/([a-z0-9]+)\.supabase\.co$/i);
+  const where = m ? m[1] : 'u:'+encodeURIComponent(c.url);
+  return location.href.split('#')[0].replace(/[^\/]*$/,'') + 'track.html#' + p.shareToken + '~' + where + '~' + c.key;
+}
+function shareSection(p){
+  const ready = sync.client && sync.session;
+  let body;
+  if(!ready) body = '<p class="small muted" style="margin:0">المشاركة تحتاج تفعيل المزامنة مع Supabase من الإعدادات، لأن العميلة تشوف آخر حالة من السحابة.</p><div><a class="btn sm" href="#settings">فتح الإعدادات</a></div>';
+  else if(!p.shareToken) body = '<p class="small" style="margin:0">أنشئي رابطًا خاصًا لهذا الطلب، والعميلة تشوف منه مراحل التنفيذ وتعديلاتها وموعد التسليم. ما تشوف السعر ولا ملاحظاتك.</p><div><button class="btn primary sm" type="button" data-act="share-on" data-id="'+p.id+'">'+I.link+'إنشاء رابط متابعة</button></div>';
+  else {
+    const url = trackUrl(p), c = clientOf(p);
+    const msg = 'أهلًا '+(c.name||'')+' 🌷\nتقدرين تتابعين سير طلبك «'+p.title+'» من هنا:\n'+url;
+    body = '<div class="share-link"><input id="share-url" readonly dir="ltr" value="'+esc(url)+'" aria-label="رابط المتابعة"><button class="btn sm" type="button" data-act="share-copy">نسخ</button></div>'+
+      '<div class="row">'+(c.num?'<a class="btn wa sm" href="'+esc(waUrl(c)+'?text='+encodeURIComponent(msg))+'" target="_blank" rel="noopener noreferrer">'+I.wa+'إرسال للعميلة</a>':'')+
+        '<a class="btn sm" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">معاينة صفحة العميلة</a></div>'+
+      '<label class="toggle" style="color:var(--ink)"><input type="checkbox" data-change="share-links" data-id="'+p.id+'"'+(p.shareLinks?' checked':'')+'> إظهار روابط المشروع للعميلة</label>'+
+      '<div class="row"><button class="btn ghost sm" type="button" data-act="share-renew" data-id="'+p.id+'">رابط جديد (يوقف القديم)</button><button class="btn ghost sm danger" type="button" data-act="share-off" data-id="'+p.id+'">إيقاف المشاركة</button></div>';
+  }
+  return '<section class="panel share-panel"><div class="section-head"><h3>مشاركة سير الطلب مع العميلة</h3>'+(p.shareToken?'<span class="chip ok">مفعّلة</span>':'')+'</div><div class="stack">'+body+'</div></section>';
+}
+
+/* ========== Clients ========== */
+function viewClients(){
+  return '<div class="page-head"><div><h1>العميلات</h1><p class="muted small">'+db.clients.length+' عميلة</p></div></div>'+
+    '<div class="toolbar"><label class="search">'+I.search+'<input type="search" id="cq" placeholder="ابحثي بالاسم أو الرقم" value="'+esc(ui.clientQ)+'" aria-label="بحث في العميلات"></label></div><div id="client-results"></div>';
+}
+function renderClientResults(){
+  const box = $('#client-results'); if(!box) return;
+  if(!db.clients.length){
+    box.innerHTML = '<div class="panel"><div class="empty">'+I.emptyArt+'<b>لا توجد عميلات بعد</b><span>تُضاف العميلة تلقائيًا عند تسجيل طلبها الأول.</span><button class="btn primary" type="button" data-act="new-order">'+I.plus+'طلب جديد</button></div></div>';
+    return;
+  }
+  const q = ui.clientQ.trim().toLowerCase(), qd = toLatinDigits(q).replace(/\D/g,'');
+  const list = db.clients.filter(c => !q || c.name.toLowerCase().includes(q) || (qd.length>=3 && (c.cc+c.num).includes(qd)))
+    .sort((a,b)=>{ const fa=a.followUp||'9999', fb=b.followUp||'9999'; return fa===fb ? a.name.localeCompare(b.name,'ar') : fa.localeCompare(fb); });
+  if(!list.length){ box.innerHTML = '<div class="panel"><div class="empty compact">لا نتائج مطابقة.</div></div>'; return; }
+  box.innerHTML = '<div class="stack">'+list.map(c=>{
+    const ps = db.projects.filter(p=>p.clientId===c.id);
+    const act = ps.filter(p=>!p.archived && !CLOSED.includes(p.status)).length;
+    return '<article class="client" id="c-'+c.id+'">'+
+      '<div class="head"><span class="avatar">'+esc((c.name||'؟').trim().charAt(0))+'</span><div style="flex:1;min-width:0"><b>'+esc(c.name)+'</b> '+demoChip(c)+'<div class="muted small ltr">'+esc(phoneDisplay(c))+'</div></div>'+
+        '<a class="icon-btn" href="'+esc(waUrl(c))+'" target="_blank" rel="noopener noreferrer" aria-label="واتساب" style="color:#1F8F4E">'+I.wa+'</a>'+
+        '<button class="icon-btn" type="button" data-act="edit-client" data-id="'+c.id+'" aria-label="تعديل بيانات العميلة">'+I.edit+'</button></div>'+
+      '<div class="row"><span class="chip">'+ps.length+' مشروع</span>'+(act?'<span class="chip today">'+act+' جارٍ</span>':'')+followChip(c)+'</div>'+
+      '<div class="followbox"><label class="small muted" for="f-'+c.id+'">موعد المتابعة</label><input id="f-'+c.id+'" type="date" data-change="follow" data-id="'+c.id+'" value="'+esc(c.followUp||'')+'">'+
+        (c.followUp?'<button class="btn sm" type="button" data-act="follow-done" data-id="'+c.id+'">تمت المتابعة</button>':'')+'</div>'+
+      (c.notes?'<p class="prose small muted" style="margin:0">'+esc(c.notes)+'</p>':'')+
+      (ps.length?'<div class="projects">'+ps.map(p=>'<a href="#p/'+p.id+'"><span>'+esc(p.title)+(p.archived?' <span class="muted small">(مؤرشف)</span>':'')+'</span>'+badge(p.status)+'</a>').join('')+'</div>':'')+
+    '</article>';
+  }).join('')+'</div>';
+}
+function clientForm(c){
+  return '<form class="form" id="client-form" novalidate data-id="'+c.id+'">'+
+    '<div class="field" data-f="clientName"><label for="c-name">اسم العميلة <span class="req">*</span></label><input id="c-name" name="name" value="'+esc(c.name)+'"><span class="err"></span></div>'+
+    '<div class="field" data-f="phone"><span class="lbl">رقم الجوال <span class="req">*</span></span><div class="phone"><label class="cc"><span>+</span><input name="cc" inputmode="numeric" value="'+esc(c.cc)+'" aria-label="مفتاح الدولة" maxlength="4"></label><input name="phone" type="tel" inputmode="tel" value="'+esc(c.num)+'" aria-label="رقم الجوال"></div><span class="err"></span></div>'+
+    '<div class="field"><label for="c-follow">موعد المتابعة</label><input id="c-follow" type="date" name="followUp" value="'+esc(c.followUp||'')+'"></div>'+
+    '<div class="field"><label for="c-notes">ملاحظات عن العميلة</label><textarea id="c-notes" name="notes" style="min-height:70px">'+esc(c.notes||'')+'</textarea></div>'+
+    '<div class="form-actions"><button class="btn primary" type="submit">حفظ</button>'+(db.projects.some(p=>p.clientId===c.id)?'':'<button class="btn danger" type="button" data-act="del-client" data-id="'+c.id+'">حذف العميلة</button>')+'</div>'+
+  '</form>';
+}
+function submitClient(form){
+  const fd = Object.fromEntries(new FormData(form));
+  const ph = normalizePhone(fd.cc, fd.phone);
+  const e1 = fd.name.trim() ? '' : 'اسم العميلة مطلوب', e2 = phoneError(ph.cc, ph.num);
+  setErr(form,'clientName',e1); setErr(form,'phone',e2);
+  if(e1||e2){ toast('راجعي الحقول المحدّدة بالأحمر','err'); return; }
+  const c = db.clients.find(x=>x.id===form.dataset.id);
+  if((c.followUp||'')!==(fd.followUp||'') && fd.followUp) logEvent(null,'حُدّد موعد متابعة '+fmt(fd.followUp), c.id);
+  Object.assign(c, {name:fd.name.trim(), cc:ph.cc, num:ph.num, followUp:fd.followUp||'', notes:fd.notes.trim()});
+  save('تم حفظ بيانات العميلة'); closeSheet(); render();
+}
+
+/* ========== Calendar ========== */
+function calItems(d){
+  const out = [];
+  activeProjects().forEach(p => { if(p.due===d && p.status!=='cancelled') out.push({type: isOverdue(p)?'late':'due', p}); });
+  db.clients.forEach(c => { if(c.followUp===d) out.push({type:'follow', c}); });
+  return out;
+}
+function evHtml(it){
+  if(it.p) return '<a class="ev '+it.type+'" href="#p/'+it.p.id+'">'+(it.type==='late'?I.alert:I.clock).replace('<svg','<svg width="16" height="16" style="flex:0 0 16px"')+'<span>تسليم: '+esc(it.p.title)+' · '+esc(clientOf(it.p).name)+'</span></a>';
+  return '<button type="button" class="ev follow" style="border:0;text-align:start;width:100%" data-act="open-client" data-id="'+it.c.id+'">'+I.chat.replace('<svg','<svg width="16" height="16" style="flex:0 0 16px"')+'<span>متابعة: '+esc(it.c.name)+'</span></button>';
+}
+function viewCalendar(){
+  const a = parseD(ui.calAnchor), t = today();
+  const DOW = ['أحد','إثنين','ثلاثاء','أربعاء','خميس','جمعة','سبت'];
+  let title, body;
+  if(ui.calMode==='month'){
+    title = new Intl.DateTimeFormat(LOC,{month:'long',year:'numeric'}).format(a);
+    const first = new Date(a.getFullYear(), a.getMonth(), 1);
+    const start = new Date(first); start.setDate(1 - first.getDay());
+    let cells = '';
+    for(let i=0;i<42;i++){
+      const d = new Date(start); d.setDate(start.getDate()+i);
+      const s = ymd(d), its = calItems(s);
+      if(i===35 && d.getMonth()!==a.getMonth()) break;
+      cells += '<button type="button" class="day'+(d.getMonth()!==a.getMonth()?' out':'')+(s===t?' today':'')+'" data-act="cal-day" data-d="'+s+'" aria-pressed="'+(s===ui.calSel)+'" aria-label="'+esc(fmtLong(s))+(its.length?'، '+its.length+' مواعيد':'')+'">'+
+        '<span class="d">'+d.getDate()+'</span><span class="dots">'+its.slice(0,4).map(x=>'<i class="'+(x.type==='follow'?'f':x.type==='late'?'l':'')+'"></i>').join('')+'</span></button>';
+    }
+    const sel = calItems(ui.calSel);
+    body = '<div class="panel"><div class="month">'+DOW.map(x=>'<div class="dow">'+x+'</div>').join('')+cells+'</div>'+
+      '<div class="legend"><span><i></i>تسليم</span><span><i style="background:var(--s-preview)"></i>متابعة</span><span><i style="background:var(--danger)"></i>متأخر</span></div></div>'+
+      '<section class="section"><h2 style="margin-bottom:10px">'+esc(fmtLong(ui.calSel))+'</h2>'+(sel.length?'<div class="stack" style="gap:6px">'+sel.map(evHtml).join('')+'</div>':'<div class="panel"><div class="empty compact">لا مواعيد في هذا اليوم.</div></div>')+'</section>';
+  }else{
+    const s0 = new Date(a); s0.setDate(a.getDate()-a.getDay());
+    const s6 = new Date(s0); s6.setDate(s0.getDate()+6);
+    title = fmt(ymd(s0)) + ' – ' + fmt(ymd(s6));
+    let rows = '';
+    for(let i=0;i<7;i++){
+      const d = new Date(s0); d.setDate(s0.getDate()+i); const s = ymd(d), its = calItems(s);
+      rows += '<div class="wd'+(s===t?' today':'')+'"><div class="lab">'+DOW[i]+'<b class="num">'+d.getDate()+'</b></div><div class="its">'+(its.length?its.map(evHtml).join(''):'<span class="muted small" style="padding-top:6px">—</span>')+'</div></div>';
+    }
+    body = '<div class="panel week">'+rows+'</div>';
+  }
+  return '<div class="page-head"><div><h1>التقويم</h1><p class="muted small">مواعيد التسليم والمتابعة</p></div>'+
+    '<div class="seg" role="group" aria-label="نوع العرض"><button type="button" data-act="cal-mode" data-v="month" aria-pressed="'+(ui.calMode==='month')+'">شهري</button><button type="button" data-act="cal-mode" data-v="week" aria-pressed="'+(ui.calMode==='week')+'">أسبوعي</button></div></div>'+
+    '<div class="cal-nav"><button class="icon-btn" type="button" data-act="cal-move" data-n="-1" aria-label="السابق">'+I.back+'</button><h2>'+esc(title)+'</h2><button class="btn sm" type="button" data-act="cal-today">اليوم</button><button class="icon-btn" type="button" data-act="cal-move" data-n="1" aria-label="التالي">'+I.next+'</button></div>'+body;
+}
+
+/* ========== Settings ========== */
+function notifState(){
+  if(!('Notification' in window)) return {txt:'هذا المتصفح لا يدعم إشعارات الصفحات. التذكير يظهر داخل التطبيق عند فتحه.', btn:false};
+  if(Notification.permission==='granted') return {txt:'الإشعارات مسموحة. يظهر إشعار ملخّص مرة يوميًا عند فتح التطبيق إن كان المتصفح يسمح بذلك.', btn:false};
+  if(Notification.permission==='denied') return {txt:'الإشعارات مرفوضة من إعدادات المتصفح.', btn:false};
+  return {txt:'يمكنكِ السماح بالإشعارات ليظهر ملخّص اليوم كإشعار عند فتح التطبيق.', btn:true};
+}
+function viewSettings(){
+  const demoCount = db.projects.filter(p=>p.demo).length;
+  const ns = notifState();
+  return '<div class="page-head"><div><h1>الإعدادات</h1></div></div><div class="stack">'+
+    viewSyncSettings()+
+    '<section class="panel set"><h2>بيانات هذا الجهاز</h2>'+
+      '<div id="storage-info" class="small muted"></div>'+
+    '</section>'+
+    '<section class="panel set"><h2>النسخ الاحتياطي</h2>'+
+      '<p class="muted small">'+(db.settings.lastBackup?'آخر نسخة: '+esc(fmtTime(db.settings.lastBackup)):'لم تُصدّر أي نسخة بعد.')+'</p>'+
+      '<div class="row"><button class="btn primary" type="button" data-act="export">تصدير نسخة احتياطية</button><button class="btn" type="button" data-act="import">استعادة من ملف</button></div>'+
+    '</section>'+
+    '<section class="panel set"><h2>التذكيرات</h2>'+
+      '<p>عند فتح التطبيق تظهر في الرئيسية مواعيد اليوم والمتأخرات، مع تنبيه في أعلى الشاشة.</p>'+
+      '<p class="muted small">لا يرسل التطبيق إشعارات وهو مغلق، لأنه بلا خدمة خلفية.</p>'+
+      '<p class="small" id="notif-txt">'+esc(ns.txt)+'</p>'+(ns.btn?'<div><button class="btn" type="button" data-act="notif">'+I.bell+'السماح بالإشعارات</button></div>':'')+
+    '</section>'+
+    '<section class="panel set"><h2>بيانات تجريبية</h2>'+
+      '<p class="muted small">طلبات وهمية مميّزة بشارة «تجريبي» لتجربة التطبيق، تُحذف بضغطة دون المساس ببياناتك الحقيقية.</p>'+
+      '<div class="row">'+(demoCount?'<button class="btn danger" type="button" data-act="remove-demo">حذف البيانات التجريبية ('+demoCount+')</button>':'<button class="btn" type="button" data-act="add-demo">إضافة بيانات تجريبية</button>')+'</div>'+
+    '</section>'+
+    '<section class="panel set"><h2>تثبيت على الجوال</h2>'+
+      '<p class="small">في سفاري: زر المشاركة ← «إضافة إلى الشاشة الرئيسية». في كروم: القائمة ← «إضافة إلى الشاشة الرئيسية». افتحيه دائمًا من نفس الرابط ونفس المتصفح حتى تظهر بياناتك.</p>'+
+    '</section>'+
+    '<section class="panel set"><h2>منطقة الخطر</h2><div><button class="btn danger" type="button" data-act="wipe">حذف كل البيانات</button></div></section>'+
+  '</div>';
+}
+async function fillStorageInfo(){
+  const el = $('#storage-info'); if(!el) return;
+  let bytes = 0; try{ bytes = (localStorage.getItem(STORE_KEY)||'').length*2; }catch(e){}
+  let persisted = null; try{ if(navigator.storage && navigator.storage.persisted) persisted = await navigator.storage.persisted(); }catch(e){}
+  el.innerHTML = 'الحجم الحالي: <span class="num">'+(bytes/1024).toFixed(1)+'</span> كيلوبايت · '+db.projects.length+' طلب · '+db.clients.length+' عميلة · '+db.revisions.length+' تعديل'+
+    (persisted===true?'<br>طلب المتصفح لحماية البيانات من المسح التلقائي: مقبول.':persisted===false?'<br>المتصفح قد يمسح البيانات عند امتلاء الجهاز؛ النسخة الاحتياطية مهمة.':'');
+}
+function exportData(){
+  db.settings.lastBackup = nowIso(); save();
+  const blob = new Blob([JSON.stringify(db,null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'rana-studio-backup-'+today()+'.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
+  toast('تم تجهيز ملف النسخة الاحتياطية');
+  render();
+}
+function importData(file){
+  const fr = new FileReader();
+  fr.onload = () => {
+    let d; try{ d = JSON.parse(fr.result); }catch(e){ toast('الملف ليس نسخة احتياطية صالحة','err'); return; }
+    if(!d || !Array.isArray(d.projects) || !Array.isArray(d.clients)){ toast('الملف لا يحتوي على بيانات هذا التطبيق','err'); return; }
+    confirmBox('استعادة النسخة الاحتياطية؟', 'سيتم استبدال كل البيانات الحالية بمحتوى الملف ('+d.projects.length+' طلب، '+d.clients.length+' عميلة). لا يمكن التراجع.', 'استبدال البيانات', ()=>{
+      db = normalizeDb(d); if(save('تمت استعادة البيانات')) render();
+    });
+  };
+  fr.onerror = () => toast('تعذّرت قراءة الملف','err');
+  fr.readAsText(file);
+}
+
+/* ========== Demo data ========== */
+function addDemo(){
+  const t = today();
+  const mk = (name,num,follow) => { const c = {id:uid(),name,cc:'966',num,followUp:follow,notes:'',demo:true,createdAt:nowIso()}; db.clients.push(c); return c; };
+  const c1 = mk('أ. نورة (تجريبي)','501234567',t), c2 = mk('أ. هيا (تجريبي)','551112233',addDays(t,-2)), c3 = mk('أ. سارة (تجريبي)','531234321','');
+  const mp = (c,title,service,status,due,extra={}) => { const p = Object.assign({id:uid(),clientId:c.id,title,service,desc:'مثال لوصف طلب يوضح المطلوب من المشروع.',received:addDays(t,-10),due,price:450,payment:'deposit',link:'',notes:'',status,archived:false,demo:true,createdAt:nowIso(),updatedAt:nowIso()},extra); db.projects.push(p); logEvent(p.id,'تسجيل الطلب (بيانات تجريبية)'); return p; };
+  const p1 = mp(c1,'موقع مبادرة القراءة','مبادرة تعليمية','progress',t);
+  const p2 = mp(c2,'ملف إنجاز معلمة','ملف إنجاز','revisions',addDays(t,-1),{price:300});
+  mp(c3,'عرض تفاعلي لدرس الكسور','عرض تفاعلي','reply',addDays(t,4),{payment:'unpaid'});
+  mp(c1,'شعار متجر','تصميم جرافيكي','new',addDays(t,9),{payment:'unpaid',price:200});
+  mp(c3,'منصة متابعة الطالبات','منصة','done',addDays(t,-6),{payment:'paid',price:900});
+  db.revisions.push({id:uid(),projectId:p2.id,desc:'تغيير لون الغلاف إلى الكحلي وإضافة صفحة الشهادات.',received:addDays(t,-3),status:'done',doneDate:addDays(t,-2),link:'',notes:'',demo:true,createdAt:new Date(Date.now()-3e8).toISOString()});
+  db.revisions.push({id:uid(),projectId:p2.id,desc:'تصحيح اسم المدرسة في الصفحة الأولى.',received:addDays(t,-1),status:'new',doneDate:'',link:'',notes:'',demo:true,createdAt:nowIso()});
+  db.tasks.push({id:uid(),projectId:p1.id,text:'تصميم الواجهة الرئيسية',done:true,demo:true},{id:uid(),projectId:p1.id,text:'ربط صفحة التسجيل',done:false,demo:true});
+  save('أُضيفت بيانات تجريبية مميّزة بشارة «تجريبي»'); render();
+}
+function removeDemo(){
+  const pids = new Set(db.projects.filter(p=>p.demo).map(p=>p.id));
+  db.projects = db.projects.filter(p=>!p.demo);
+  db.revisions = db.revisions.filter(r=>!r.demo && !pids.has(r.projectId));
+  db.tasks = db.tasks.filter(x=>!x.demo && !pids.has(x.projectId));
+  db.events = db.events.filter(e=>!pids.has(e.projectId));
+  db.content = db.content.filter(x=>!x.demo);
+  const usedC = new Set(db.projects.map(p=>p.clientId));
+  db.clients = db.clients.filter(c=>!c.demo || usedC.has(c.id));
+  save('حُذفت البيانات التجريبية'); render();
+}
+
+/* ========== Sheet & confirm ========== */
+let lastFocus = null;
+function openSheet(title, html){
+  lastFocus = document.activeElement;
+  $('#sheet-title').textContent = title;
+  $('#sheet-body').innerHTML = html;
+  $('#sheet').hidden = false;
+  document.body.style.overflow = 'hidden';
+  const f = $('#sheet-body').querySelector('input:not([type=hidden]),textarea,select,button');
+  if(f && window.matchMedia('(min-width:700px)').matches) f.focus();
+}
+function closeSheet(){
+  $('#sheet').hidden = true; $('#sheet-body').innerHTML = '';
+  document.body.style.overflow = '';
+  if(lastFocus && lastFocus.focus) try{ lastFocus.focus(); }catch(e){}
+}
+let confirmCb = null;
+function confirmBox(title, text, okLabel, cb){
+  confirmCb = cb;
+  openSheet(title, '<div class="form"><p style="margin:0">'+esc(text)+'</p><div class="form-actions"><button class="btn danger" type="button" data-act="confirm-ok" style="background:var(--danger);color:#fff;border-color:var(--danger)">'+esc(okLabel)+'</button><button class="btn" type="button" data-act="close-sheet">تراجع</button></div></div>');
+}
+
+/* ========== Events ========== */
+document.addEventListener('click', e => {
+  const a = e.target.closest('[data-act]');
+  if(a){
+    const act = a.dataset.act, id = a.dataset.id;
+    switch(act){
+      case 'new-order': openSheet('طلب جديد', orderForm(null)); break;
+      case 'edit-order': openSheet('تعديل بيانات الطلب', orderForm(db.projects.find(p=>p.id===id))); break;
+      case 'close-sheet': closeSheet(); break;
+      case 'confirm-ok': { const cb = confirmCb; confirmCb = null; closeSheet(); if(cb) cb(); break; }
+      case 'back': if(history.length>1) history.back(); else go('orders'); break;
+      case 'goto-filter': ui.status = a.dataset.status; ui.due = a.dataset.due; ui.q=''; ui.archived=false; go('orders'); break;
+      case 'clear-filters': ui.status='all'; ui.due='all'; ui.q=''; render(); break;
+      case 'view': ui.view = a.dataset.v; try{localStorage.setItem('ranastudio.view',ui.view);}catch(err){} render(); break;
+      case 'next-status': { e.stopPropagation(); const p = db.projects.find(x=>x.id===id); const i = STATUSES.findIndex(s=>s[0]===p.status); if(STATUSES[i+1] && !CLOSED.includes(p.status)){ const nx = STATUSES[i+1][0], openN = nx==='done' ? revsOf(id).filter(r=>REV_OPEN.includes(r.status)).length : 0; setStatus(id, nx); renderOrderResults(); if(openN) askCloseRevs(id, openN); } break; }
+      case 'wa-from-form': {
+        const f = $('#order-form'); const ph = normalizePhone(f.cc.value, f.phone.value); const err = phoneError(ph.cc, ph.num);
+        setErr(f,'phone',err);
+        if(err){ toast('أدخلي رقمًا صحيحًا أولًا','err'); break; }
+        f.phone.value = ph.num; f.cc.value = ph.cc;
+        window.open(waUrl(ph), '_blank', 'noopener'); break;
+      }
+      case 'archive': { const p = db.projects.find(x=>x.id===id); p.archived = !p.archived; touch(p); logEvent(p.id, p.archived?'أُرشف المشروع':'أُلغيت أرشفة المشروع'); save(p.archived?'تمت أرشفة المشروع':'أُعيد المشروع للطلبات'); render(); break; }
+      case 'delete-order': { const p = db.projects.find(x=>x.id===id); confirmBox('حذف الطلب؟','سيُحذف «'+p.title+'» مع كل تعديلاته ومهامه وسجله نهائيًا. إن أردتِ إخفاءه فقط فاستخدمي الأرشفة.','حذف نهائي',()=>{
+          db.projects = db.projects.filter(x=>x.id!==id); db.revisions = db.revisions.filter(r=>r.projectId!==id); db.tasks = db.tasks.filter(t=>t.projectId!==id); db.events = db.events.filter(ev=>ev.projectId!==id);
+          save('تم حذف الطلب'); go('orders'); }); break; }
+      case 'add-rev': openSheet('إضافة تعديل', revForm(id, null)); break;
+      case 'edit-rev': { const r = db.revisions.find(x=>x.id===id); openSheet('تفاصيل التعديل', revForm(r.projectId, r)); break; }
+      case 'del-rev': { const r = db.revisions.find(x=>x.id===id); closeSheet(); confirmBox('حذف هذا التعديل؟','سيُحذف من سجل التعديلات نهائيًا.','حذف',()=>{ db.revisions = db.revisions.filter(x=>x.id!==id); logEvent(r.projectId,'حُذف تعديل من السجل'); save('تم حذف التعديل'); render(); }); break; }
+      case 'del-task': { const t = db.tasks.find(x=>x.id===id); db.tasks = db.tasks.filter(x=>x.id!==id); logEvent(t.projectId,'حُذفت مهمة: '+t.text); save(); render(); break; }
+      case 'open-client': ui.clientQ=''; go('clients'); setTimeout(()=>{ const el = document.getElementById('c-'+id); if(el){ el.scrollIntoView({block:'center'}); el.style.outline='2px solid var(--accent)'; setTimeout(()=>el.style.outline='',1600);} }, 60); break;
+      case 'edit-client': openSheet('بيانات العميلة', clientForm(db.clients.find(c=>c.id===id))); break;
+      case 'del-client': closeSheet(); confirmBox('حذف العميلة؟','لا توجد مشاريع مرتبطة بها، وستُحذف بياناتها.','حذف',()=>{ db.clients = db.clients.filter(c=>c.id!==id); save('تم حذف العميلة'); render(); }); break;
+      case 'follow-done': { const c = db.clients.find(x=>x.id===id); logEvent(null,'تمت المتابعة', c.id); c.followUp=''; save('سُجّلت المتابعة'); render(); break; }
+      case 'cal-mode': ui.calMode = a.dataset.v; render(); break;
+      case 'cal-day': ui.calSel = a.dataset.d; render(); break;
+      case 'cal-today': ui.calAnchor = today(); ui.calSel = today(); render(); break;
+      case 'cal-move': { const n = +a.dataset.n; const d = parseD(ui.calAnchor);
+        if(ui.calMode==='month'){ d.setDate(1); d.setMonth(d.getMonth()+n); } else d.setDate(d.getDate()+7*n);
+        ui.calAnchor = ymd(d); render(); break; }
+      case 'export': exportData(); break;
+      case 'import': $('#import-file').click(); break;
+      case 'notif': Notification.requestPermission().then(()=>{ trySummaryNotification(true); render(); }); break;
+      case 'add-demo': addDemo(); break;
+      case 'remove-demo': confirmBox('حذف البيانات التجريبية؟','تُحذف فقط العناصر المميّزة بشارة «تجريبي».','حذف التجريبية', removeDemo); break;
+      case 'link-add': { const box = $('#links-box'); box.insertAdjacentHTML('beforeend', linkRow({label:'',url:''})); box.lastElementChild.querySelector('input').focus(); break; }
+      case 'link-remove': { const row = a.closest('.link-row'); const box = row.parentElement; row.remove(); if(!box.children.length) box.insertAdjacentHTML('beforeend', linkRow({label:'',url:''})); break; }
+      case 'link-del': { const p = db.projects.find(x=>x.id===id); const arr = parseLinks(p.link); const gone = arr.splice(+a.dataset.i,1)[0]; p.link = serializeLinks(arr); touch(p); logEvent(p.id,'حُذف رابط: '+(gone.label||gone.url)); save('تم حذف الرابط'); render(); break; }
+      case 'ct-db': a.parentElement.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed', String(b===a))); break;
+      case 'ct-filter': ui.cf = a.dataset.v; render(); break;
+      case 'ct-toggle': { const c = db.content.find(x=>x.id===id); c[a.dataset.k] = !c[a.dataset.k]; c.updatedAt = nowIso(); save(); render(); break; }
+      case 'ct-edit': openSheet('تعديل الفكرة', contentEditForm(db.content.find(x=>x.id===id))); break;
+      case 'ct-del': { const c = db.content.find(x=>x.id===id); closeSheet(); confirmBox('حذف الفكرة؟','ستُحذف «'+c.title+'» من محتواي.','حذف',()=>{ db.content = db.content.filter(x=>x.id!==id); save('تم حذف الفكرة'); render(); }); break; }
+      case 'share-on': case 'share-renew': { const p = db.projects.find(x=>x.id===id); const renew = act==='share-renew'; p.shareToken = newShareToken(); touch(p); logEvent(p.id, renew?'أُنشئ رابط متابعة جديد وأُوقف القديم':'فُعّلت مشاركة سير الطلب مع العميلة'); save(renew?'تم إنشاء رابط جديد':'تم إنشاء رابط المتابعة'); scheduleSync(0); render(); break; }
+      case 'share-off': { const p = db.projects.find(x=>x.id===id); confirmBox('إيقاف المشاركة؟','الرابط اللي أرسلتيه للعميلة يتوقف عن العمل. تقدرين تنشئين رابطًا جديدًا لاحقًا.','إيقاف', ()=>{ p.shareToken = ''; touch(p); logEvent(p.id,'أُوقفت مشاركة سير الطلب'); save('تم إيقاف المشاركة'); scheduleSync(0); render(); }); break; }
+      case 'share-copy': { const inp = $('#share-url'); const done = ()=>toast('تم نسخ الرابط'); if(navigator.clipboard) navigator.clipboard.writeText(inp.value).then(done, ()=>{ inp.select(); toast('حدّدت الرابط، انسخيه يدويًا'); }); else { inp.select(); document.execCommand && document.execCommand('copy'); done(); } break; }
+      case 'sync-now': syncNow(true); break;
+      case 'sync-logout': confirmBox('تسجيل الخروج؟','تُمسح نسخة البيانات من هذا الجهاز فقط، وتبقى محفوظة في السحابة وتعود عند تسجيل الدخول مرة أخرى.','تسجيل الخروج', signOut); break;
+      case 'sync-edit-config': ui.editSyncConfig = true; render(); break;
+      case 'sync-cancel-config': ui.editSyncConfig = false; render(); break;
+      case 'wipe':confirmBox('حذف كل البيانات؟','ستُمسح كل الطلبات والعميلات والتعديلات من هذا الجهاز، ومن السحابة إن كانت المزامنة مفعّلة. صدّري نسخة احتياطية أولًا إن احتجتِها.','حذف الكل',()=>{ db = emptyDb(); save('تم حذف كل البيانات'); go('home'); }); break;
+    }
+    return;
+  }
+  if(e.target.closest('select, input, textarea, a, button')) return;
+  const o = e.target.closest('[data-open]');
+  if(o) go('p/'+o.dataset.open);
+});
+document.addEventListener('change', e => {
+  const el = e.target, k = el.dataset.change;
+  if(el.id==='f-status'){ ui.status = el.value; renderOrderResults(); return; }
+  if(el.id==='f-due'){ ui.due = el.value; renderOrderResults(); return; }
+  if(el.id==='f-arch'){ ui.archived = el.checked; renderOrderResults(); return; }
+  if(el.id==='import-file'){ if(el.files[0]) importData(el.files[0]); el.value=''; return; }
+  if(el.name==='status' && el.form && el.form.id==='rev-form'){ if(['done','sent','approved'].includes(el.value) && !el.form.doneDate.value) el.form.doneDate.value = today(); return; }
+  if(!k) return;
+  const id = el.dataset.id;
+  if(k==='status'){ const openN = el.value==='done' ? revsOf(id).filter(r=>REV_OPEN.includes(r.status)).length : 0; setStatus(id, el.value); if(openN) setTimeout(()=>askCloseRevs(id, openN), 0); if(route().name==='orders') renderOrderResults(); else render(); }
+  else if(k==='payment'){ const p = db.projects.find(x=>x.id===id); p.payment = el.value; touch(p); logEvent(p.id,'الدفع: «'+PAYM[el.value]+'»'); save('تم تحديث حالة الدفع'); render(); }
+  else if(k==='follow'){ const c = db.clients.find(x=>x.id===id); c.followUp = el.value; logEvent(null, el.value?'حُدّد موعد متابعة '+fmt(el.value):'أُزيل موعد المتابعة', c.id); save(el.value?'حُدّد موعد المتابعة':'أُزيل موعد المتابعة'); render(); }
+  else if(k==='share-links'){ const p = db.projects.find(x=>x.id===id); p.shareLinks = el.checked; touch(p); save(el.checked?'الروابط تظهر للعميلة':'الروابط مخفية عن العميلة'); }
+  else if(k==='rev-status'){ const r = db.revisions.find(x=>x.id===id); const old = r.status; r.status = el.value; r.updatedAt = nowIso();
+    if(['done','sent','approved'].includes(el.value) && !r.doneDate) r.doneDate = today();
+    const no = revsOf(r.projectId).indexOf(r)+1;
+    logEvent(r.projectId, 'التعديل '+no+': من «'+REV[old]+'» إلى «'+REV[el.value]+'»'); save('التعديل '+no+': '+REV[el.value]); render(); }
+  else if(k==='task'){ const t = db.tasks.find(x=>x.id===id); t.done = el.checked; logEvent(t.projectId, (t.done?'أُنجزت مهمة: ':'أُعيد فتح مهمة: ')+t.text); save(); render(); }
+});
+let notesTimer = null;
+document.addEventListener('input', e => {
+  const el = e.target;
+  if(el.id==='q'){ ui.q = el.value; renderOrderResults(); return; }
+  if(el.id==='cq'){ ui.clientQ = el.value; renderClientResults(); return; }
+  if(el.id==='cq2'){ ui.cq2 = el.value; renderContentList(); return; }
+  if(el.dataset.input==='notes'){
+    clearTimeout(notesTimer);
+    notesTimer = setTimeout(()=>{ const p = db.projects.find(x=>x.id===el.dataset.id); if(!p) return; p.notes = el.value; touch(p); if(save()){ const s = $('#notes-saved'); if(s){ s.classList.add('on'); setTimeout(()=>s.classList.remove('on'),1400);} } }, 500);
+  }
+  const fld = el.closest && el.closest('.field.invalid'); if(fld){ fld.classList.remove('invalid'); const er = fld.querySelector('.err'); if(er) er.textContent=''; }
+});
+document.addEventListener('submit', e => {
+  const f = e.target; e.preventDefault();
+  if(f.id==='content-form'){
+    const v = readContentForm(f); if(!v) return;
+    const needsDb = f.querySelector('[data-act=ct-db][aria-pressed=true]').dataset.v==='1';
+    db.content.push(Object.assign({id:uid(), needsDb, notes:'', tiktok:false, tiktokStory:false, waStatus:false, igStory:false, igPost:false, createdAt:nowIso(), updatedAt:nowIso()}, v));
+    save('أُضيفت الفكرة'); render(); const t = $('#ct-title'); if(t) t.focus(); return;
+  }
+  if(f.id==='content-edit-form'){
+    const v = readContentForm(f); if(!v) return;
+    const c = db.content.find(x=>x.id===f.dataset.id);
+    Object.assign(c, v, {needsDb: f.needsDb.value==='1', notes: f.notes.value.trim(), updatedAt: nowIso()});
+    save('تم حفظ الفكرة'); closeSheet(); render(); return;
+  }
+  if(f.id==='sync-config-form') submitSyncConfig(f);
+  else if(f.id==='login-form') submitLogin(f);
+  else if(f.id==='order-form') submitOrder(f);
+  else if(f.id==='rev-form') submitRev(f);
+  else if(f.id==='client-form') submitClient(f);
+  else if(f.dataset.form==='link'){
+    const url = f.url.value.trim(), label = f.label.value.trim();
+    if(!URL_RE.test(url)){ toast('الرابط يجب أن يبدأ بـ https://','err'); f.url.focus(); return; }
+    const p = db.projects.find(x=>x.id===f.dataset.id); const arr = parseLinks(p.link); arr.push({label,url});
+    p.link = serializeLinks(arr); touch(p); logEvent(p.id,'أُضيف رابط: '+(label||url)); save('أُضيف الرابط'); render();
+  }
+  else if(f.dataset.form==='task'){
+    const text = f.text.value.trim(); if(!text) return;
+    db.tasks.push({id:uid(), projectId:f.dataset.id, text, done:false, createdAt:nowIso()});
+    logEvent(f.dataset.id, 'أُضيفت مهمة: '+text); save(); render();
+    const inp = $('#new-task'); if(inp) inp.focus();
+  }
+});
+document.addEventListener('keydown', e => { if(e.key==='Escape' && !$('#sheet').hidden) closeSheet(); });
+window.addEventListener('storage', e => { if(e.key===STORE_KEY){ db = loadDb(); render(); } });
+
+/* ========== Reminder on open ========== */
+function trySummaryNotification(force){
+  if(!('Notification' in window) || Notification.permission!=='granted') return;
+  if(!force && db.settings.lastNotified===today()) return;
+  const b = homeBuckets(); const n = b.dueToday.length + b.followToday.length, l = b.late.length + b.followLate.length;
+  if(!n && !l && !force) return;
+  try{
+    new Notification('Rana Studio', {body: (n||l) ? ('اليوم: '+n+' · متأخر: '+l) : 'تم تفعيل الإشعارات', tag:'rana-daily'});
+    db.settings.lastNotified = today(); save();
+  }catch(err){
+    if(force) toast('متصفح الجوال لا يعرض إشعارات من صفحة بدون خدمة خلفية؛ التذكير سيظهر داخل التطبيق.','err');
+  }
+}
+function remindOnOpen(){
+  const b = homeBuckets(); const n = b.dueToday.length + b.followToday.length, l = b.late.length + b.followLate.length;
+  if(l) toast('تنبيه: '+l+' '+(l===1?'عنصر متأخر':'عناصر متأخرة')+(n?' و'+n+' مواعيد اليوم':''), 'err');
+  else if(n) toast('لديكِ '+n+' '+(n===1?'موعد':'مواعيد')+' اليوم');
+  trySummaryNotification(false);
+}
+
+/* ========== Sync with Supabase ========== */
+const SYNC_CFG_KEY = 'ranastudio.sync', BASE_KEY = 'ranastudio.base';
+const N = v => (v===''||v===undefined) ? null : v;
+const S = v => v ?? '';
+const TS = v => v ? new Date(v).toISOString() : '';
+const NUM = v => (v===''||v===null||v===undefined||isNaN(Number(v))) ? null : Number(v);
+const TABLES = [
+  {key:'clients', table:'clients',
+    toRow:r=>({id:r.id,name:r.name||'',cc:r.cc||'966',num:r.num||'',follow_up:N(r.followUp),notes:r.notes||'',demo:!!r.demo,created_at:N(r.createdAt)}),
+    fromRow:w=>({id:w.id,name:w.name,cc:w.cc,num:w.num,followUp:S(w.follow_up),notes:S(w.notes),demo:!!w.demo,createdAt:TS(w.created_at)})},
+  {key:'projects', table:'projects',
+    toRow:p=>({id:p.id,client_id:p.clientId,title:p.title||'',service:p.service||'',description:p.desc||'',received:N(p.received),due:N(p.due),price:NUM(p.price),payment:p.payment||'unpaid',link:p.link||'',notes:p.notes||'',status:p.status||'new',archived:!!p.archived,share_token:N(p.shareToken),share_links:!!p.shareLinks,completed_at:N(p.completedAt),demo:!!p.demo,created_at:N(p.createdAt),updated_at:N(p.updatedAt)}),
+    fromRow:w=>({id:w.id,clientId:w.client_id,title:w.title,service:w.service,desc:S(w.description),received:S(w.received),due:S(w.due),price:w.price===null?'':Number(w.price),payment:w.payment,link:S(w.link),notes:S(w.notes),status:w.status,archived:!!w.archived,shareToken:S(w.share_token),shareLinks:!!w.share_links,completedAt:S(w.completed_at),demo:!!w.demo,createdAt:TS(w.created_at),updatedAt:TS(w.updated_at)})},
+  {key:'revisions', table:'revisions',
+    toRow:r=>({id:r.id,project_id:r.projectId,description:r.desc||'',received:N(r.received),status:r.status||'new',done_date:N(r.doneDate),link:r.link||'',notes:r.notes||'',demo:!!r.demo,created_at:N(r.createdAt),updated_at:N(r.updatedAt)}),
+    fromRow:w=>({id:w.id,projectId:w.project_id,desc:w.description,received:S(w.received),status:w.status,doneDate:S(w.done_date),link:S(w.link),notes:S(w.notes),demo:!!w.demo,createdAt:TS(w.created_at),updatedAt:TS(w.updated_at)})},
+  {key:'tasks', table:'tasks',
+    toRow:t=>({id:t.id,project_id:t.projectId,text:t.text||'',done:!!t.done,demo:!!t.demo,created_at:N(t.createdAt)}),
+    fromRow:w=>({id:w.id,projectId:w.project_id,text:w.text,done:!!w.done,demo:!!w.demo,createdAt:TS(w.created_at)})},
+  {key:'events', table:'events',
+    toRow:e=>({id:e.id,project_id:N(e.projectId),client_id:N(e.clientId),text:e.text||'',at:N(e.at)}),
+    fromRow:w=>({id:w.id,projectId:w.project_id||null,clientId:w.client_id||null,text:w.text,at:TS(w.at)})},
+  {key:'content', table:'content', optional:true,
+    toRow:c=>({id:c.id,title:c.title||'',link:c.link||'',needs_db:!!c.needsDb,tiktok:!!c.tiktok,tiktok_story:!!c.tiktokStory,wa_status:!!c.waStatus,ig_story:!!c.igStory,ig_post:!!c.igPost,notes:c.notes||'',demo:!!c.demo,created_at:N(c.createdAt),updated_at:N(c.updatedAt)}),
+    fromRow:w=>({id:w.id,title:w.title,link:S(w.link),needsDb:!!w.needs_db,tiktok:!!w.tiktok,tiktokStory:!!w.tiktok_story,waStatus:!!w.wa_status,igStory:!!w.ig_story,igPost:!!w.ig_post,notes:S(w.notes),demo:!!w.demo,createdAt:TS(w.created_at),updatedAt:TS(w.updated_at)})}
+];
+const sync = {client:null, session:null, status:'off', last:null, err:'', running:false, again:false, timer:null, channel:null};
+function lsGet(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } }
+function lsSet(k, v){ try{ if(v===null) localStorage.removeItem(k); else localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+function syncCfg(){
+  const s = lsGet(SYNC_CFG_KEY, {});
+  return {url:(SUPABASE_URL || s.url || '').trim().replace(/\/+$/,''), key:(SUPABASE_ANON_KEY || s.key || '').trim(), fixed: !!(SUPABASE_URL && SUPABASE_ANON_KEY)};
+}
+function setSync(status, err){
+  sync.status = status; if(err!==undefined) sync.err = err;
+  const map = {off:['',''], signedout:['غير مسجّلة',''], busy:['جارٍ المزامنة','busy'], ok:['متزامن','ok'], err:['تعذّرت المزامنة','err'], offline:['بلا إنترنت','err']};
+  for(const id of ['sync-pill','sync-pill-side']){
+    const el = document.getElementById(id); if(!el) continue;
+    const [t,c] = map[status] || ['',''];
+    el.hidden = status==='off'; el.textContent = t; el.className = 'sync-pill ' + c;
+  }
+  const box = document.getElementById('sync-status'); if(box) box.innerHTML = syncStatusHtml();
+}
+function syncStatusHtml(){
+  if(sync.status==='busy') return 'جارٍ المزامنة…';
+  if(sync.status==='offline') return 'لا يوجد اتصال بالإنترنت. التغييرات محفوظة على الجهاز وتُرفع عند عودة الاتصال.';
+  if(sync.status==='err') return '<span style="color:var(--danger)">'+esc(sync.err||'تعذّرت المزامنة')+'</span>';
+  if(sync.last) return 'آخر مزامنة: '+esc(fmtTime(sync.last));
+  return '';
+}
+
+async function initSync(){
+  const c = syncCfg();
+  if(sync.channel && sync.client){ try{ sync.client.removeChannel(sync.channel); }catch(e){} sync.channel = null; }
+  sync.client = null; sync.session = null;
+  if(!c.url || !c.key){ setSync('off',''); return; }
+  if(!window.supabase || !window.supabase.createClient){ setSync('err','تعذّر تحميل مكتبة Supabase. تأكدي من الاتصال بالإنترنت ثم أعيدي فتح التطبيق.'); return; }
+  try{
+    sync.client = window.supabase.createClient(c.url, c.key, {auth:{persistSession:true, autoRefreshToken:true, storageKey:'ranastudio.auth'}});
+  }catch(e){ setSync('err','رابط المشروع أو المفتاح غير صحيح.'); return; }
+  const {data} = await sync.client.auth.getSession();
+  sync.session = data && data.session;
+  sync.client.auth.onAuthStateChange((ev, s) => { sync.session = s; if(!s){ setSync('signedout'); } });
+  if(sync.session){ startRealtime(); await syncNow(); }
+  else setSync('signedout');
+  if(route().name==='settings') render();
+}
+function startRealtime(){
+  if(!sync.client || sync.channel || !sync.client.channel) return;
+  try{
+    let ch = sync.client.channel('ranastudio-changes');
+    for(const t of TABLES) ch = ch.on('postgres_changes', {event:'*', schema:'public', table:t.table}, ()=>scheduleSync(800));
+    sync.channel = ch.subscribe();
+  }catch(e){}
+}
+function scheduleSync(delay){
+  if(!sync.client || !sync.session) return;
+  clearTimeout(sync.timer);
+  sync.timer = setTimeout(()=>syncNow(), delay ?? 1200);
+}
+async function fetchAll(table){
+  const rows = []; const size = 1000;
+  for(let from=0;;from+=size){
+    const {data, error} = await sync.client.from(table).select('*').range(from, from+size-1);
+    if(error) throw error;
+    rows.push(...data);
+    if(data.length < size) break;
+  }
+  return rows;
+}
+function syncErrorText(e){
+  const m = String((e && (e.message || e.error_description)) || e || '');
+  if(/fetch|network|Failed to/i.test(m)) return navigator.onLine===false ? '' : 'تعذّر الوصول إلى Supabase. تأكدي من الرابط والاتصال.';
+  if(/JWT|token|auth/i.test(m)) return 'انتهت الجلسة. سجّلي الدخول مرة أخرى.';
+  const where = e && e.table ? ' (جدول '+e.table+(e.op?'، عند ال'+e.op:'')+')' : '';
+  if(/column/i.test(m)) return 'عمود ناقص في قاعدة البيانات'+where+': '+m;
+  if(/relation|does not exist|schema cache/i.test(m)) return 'جدول غير موجود في Supabase'+where+'. شغّلي ملف التحديث الخاص به.';
+  if(e && e.table) return 'تعذّرت المزامنة'+where+': '+m;
+  if(/row-level security|policy|permission/i.test(m)) return 'رفضت سياسات الحماية العملية. تأكدي من تشغيل ملف الإعداد كاملًا.';
+  return 'تعذّرت المزامنة: '+m;
+}
+/* Three-way merge: base = what both sides agreed on at the last sync.
+   - changed only locally  → upload
+   - changed only remotely → take remote
+   - changed on both       → keep this device's version
+   - deleted on one side (other side unchanged) → delete on both */
+async function syncNow(manual){
+  if(!sync.client || !sync.session) return;
+  if(sync.running){ sync.again = true; return; }
+  if(navigator.onLine===false){ setSync('offline'); return; }
+  sync.running = true; setSync('busy');
+  try{
+    const base = lsGet(BASE_KEY, {});
+    const remote = {};
+    const skip = new Set();
+    for(const t of TABLES){
+      try{ remote[t.key] = await fetchAll(t.table); }
+      catch(err){ if(t.optional && /relation|does not exist|schema cache|Could not find/i.test(String(err && err.message)) && !/column/i.test(String(err && err.message))){ skip.add(t.key); remote[t.key] = []; sync.missingContent = true; } else { err.table = t.table; err.op = 'قراءة'; throw err; } }
+    }
+    if(!skip.has('content')) sync.missingContent = false;
+    const before = JSON.stringify(TABLES.map(t=>db[t.key]));
+    const result = {}, upserts = {}, deletes = {}, newBase = {};
+    for(const t of TABLES){
+      if(skip.has(t.key)){ result[t.key] = db[t.key]; newBase[t.key] = base[t.key] || {}; upserts[t.key] = []; deletes[t.key] = []; continue; }
+      const B = base[t.key] || {};
+      const L = new Map(db[t.key].map(x=>[x.id, x]));
+      const R = new Map(remote[t.key].map(w=>{ const rec = t.fromRow(w); return [rec.id, rec]; }));
+      const key = rec => JSON.stringify(t.toRow(rec));
+      const out = []; upserts[t.key] = []; deletes[t.key] = [];
+      const ids = new Set([...L.keys(), ...R.keys()]);
+      for(const id of ids){
+        const l = L.get(id), r = R.get(id), b = B[id];
+        const lk = l ? key(l) : null, rk = r ? key(r) : null;
+        const lChanged = l ? lk!==b : b!==undefined;
+        const rChanged = r ? rk!==b : b!==undefined;
+        let keep = null;
+        if(l && r) keep = (lChanged && lk!==rk) ? l : r;
+        else if(l && !r) keep = (b!==undefined && !lChanged) ? null : l;        /* deleted remotely, or new here */
+        else if(!l && r) keep = (b!==undefined && !rChanged) ? null : r;        /* deleted here, or new remotely */
+        if(keep){
+          out.push(keep);
+          if(key(keep)!==rk) upserts[t.key].push(t.toRow(keep));
+        }else if(r) deletes[t.key].push(id);
+      }
+      result[t.key] = out;
+      const nb = {}; for(const x of out) nb[x.id] = key(x); newBase[t.key] = nb;
+    }
+    for(const t of TABLES){
+      const rows = upserts[t.key];
+      for(let i=0;i<rows.length;i+=500){
+        const {error} = await sync.client.from(t.table).upsert(rows.slice(i,i+500), {onConflict:'id'});
+        if(error){ error.table = t.table; error.op = 'حفظ'; throw error; }
+      }
+    }
+    for(const t of [...TABLES].reverse()){
+      const ids = deletes[t.key];
+      for(let i=0;i<ids.length;i+=200){
+        const {error} = await sync.client.from(t.table).delete().in('id', ids.slice(i,i+200));
+        if(error){ error.table = t.table; error.op = 'حذف'; throw error; }
+      }
+    }
+    const finalBase = {}; for(const t of TABLES) finalBase[t.key] = newBase[t.key];
+    for(const t of TABLES) db[t.key] = result[t.key];
+    try{ localStorage.setItem(STORE_KEY, JSON.stringify(db)); }catch(e){}
+    lsSet(BASE_KEY, finalBase);
+    sync.last = nowIso(); setSync('ok','');
+    if(manual) toast('تمت المزامنة');
+    const changed = before !== JSON.stringify(TABLES.map(t=>db[t.key]));
+    if(changed) safeRender();
+  }catch(e){
+    const msg = syncErrorText(e);
+    if(!msg) setSync('offline'); else setSync('err', msg);
+    if(manual) toast(msg || 'لا يوجد اتصال بالإنترنت', 'err');
+  }finally{
+    sync.running = false;
+    if(sync.again){ sync.again = false; scheduleSync(300); }
+  }
+}
+function safeRender(){
+  const a = document.activeElement;
+  const typing = a && $('#main').contains(a) && /^(INPUT|TEXTAREA)$/.test(a.tagName) && a.type!=='checkbox' && a.type!=='date';
+  if(typing || !$('#sheet').hidden){ sync.pendingRender = true; return; }
+  render();
+}
+document.addEventListener('focusout', ()=>{ if(sync.pendingRender) setTimeout(()=>{ if(sync.pendingRender){ sync.pendingRender=false; safeRender(); } }, 200); });
+document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible') scheduleSync(200); });
+window.addEventListener('online', ()=>scheduleSync(200));
+window.addEventListener('offline', ()=>{ if(sync.session) setSync('offline'); });
+setInterval(()=>{ if(document.visibilityState==='visible') scheduleSync(0); }, 60000);
+
+async function submitSyncConfig(f){
+  const url = f.url.value.trim().replace(/\/+$/,''), key = f.key.value.trim();
+  if(!/^https:\/\/[a-z0-9-]+\.supabase\.(co|in)$/i.test(url) && !/^https:\/\/\S+$/i.test(url)){ toast('رابط المشروع يجب أن يبدأ بـ https://','err'); return; }
+  if(key.length < 30){ toast('المفتاح قصير. انسخي مفتاح anon public كاملًا','err'); return; }
+  if(/service_role/.test(atobSafe(key))){ toast('هذا مفتاح service_role السري. استخدمي مفتاح anon public فقط','err'); return; }
+  lsSet(SYNC_CFG_KEY, {url, key}); ui.editSyncConfig = false;
+  toast('تم حفظ بيانات المشروع');
+  await initSync(); render();
+}
+function atobSafe(k){ try{ return atob(k.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')); }catch(e){ return ''; } }
+async function submitLogin(f){
+  const btn = f.querySelector('button[type=submit]'); btn.disabled = true;
+  try{
+    const {data, error} = await sync.client.auth.signInWithPassword({email:f.email.value.trim(), password:f.password.value});
+    if(error){ toast(/Invalid login/i.test(error.message) ? 'البريد أو كلمة المرور غير صحيحة' : 'تعذّر تسجيل الدخول: '+error.message, 'err'); return; }
+    sync.session = data.session;
+    toast('تم تسجيل الدخول. جارٍ مزامنة بياناتك…');
+    startRealtime();
+    await syncNow();
+    render();
+  }catch(e){ toast(syncErrorText(e) || 'لا يوجد اتصال بالإنترنت','err'); }
+  finally{ btn.disabled = false; }
+}
+async function signOut(){
+  try{ await sync.client.auth.signOut(); }catch(e){}
+  if(sync.channel){ try{ sync.client.removeChannel(sync.channel); }catch(e){} sync.channel = null; }
+  sync.session = null; sync.last = null;
+  db = emptyDb(); lsSet(BASE_KEY, null);
+  try{ localStorage.setItem(STORE_KEY, JSON.stringify(db)); }catch(e){}
+  setSync('signedout'); toast('تم تسجيل الخروج'); render();
+}
+function viewSyncSettings(){
+  const c = syncCfg();
+  const steps = '<ol class="steps"><li>أنشئي مشروعًا مجانيًا في supabase.com.</li><li>من SQL Editor شغّلي ملف <span class="ltr">rana-studio-setup.sql</span>.</li><li>من Authentication ← Users أضيفي مستخدمًا ببريدك وكلمة مرور (Auto Confirm).</li><li>من Authentication ← Sign In / Providers أوقفي «Allow new users to sign up».</li><li>من Project Settings ← API انسخي Project URL ومفتاح anon public والصقيهما هنا.</li></ol>';
+  let body;
+  if(!c.url || !c.key || (ui.editSyncConfig && !c.fixed)){
+    body = '<p class="small">اربطي التطبيق بمشروع Supabase لتظهر نفس البيانات على الجوال واللاب توب.</p>'+steps+
+      '<form class="form" id="sync-config-form" novalidate style="margin-top:6px">'+
+        '<div class="field"><label for="s-url">Project URL</label><input id="s-url" name="url" dir="ltr" inputmode="url" placeholder="https://xxxx.supabase.co" value="'+esc(c.url)+'"></div>'+
+        '<div class="field"><label for="s-key">anon public key</label><input id="s-key" name="key" dir="ltr" autocomplete="off" value="'+esc(c.key)+'"></div>'+
+        '<div class="row"><button class="btn primary" type="submit">حفظ وربط</button>'+(ui.editSyncConfig?'<button class="btn" type="button" data-act="sync-cancel-config">إلغاء</button>':'')+'</div>'+
+      '</form>';
+  }else if(!sync.session){
+    body = '<p class="small">سجّلي الدخول بالحساب الذي أنشأتِه في Supabase. البيانات الموجودة على هذا الجهاز تُدمج مع بيانات السحابة.</p>'+
+      '<form class="form" id="login-form" novalidate>'+
+        '<div class="field"><label for="l-email">البريد الإلكتروني</label><input id="l-email" name="email" type="email" dir="ltr" autocomplete="username" required></div>'+
+        '<div class="field"><label for="l-pass">كلمة المرور</label><input id="l-pass" name="password" type="password" dir="ltr" autocomplete="current-password" required></div>'+
+        '<div class="row"><button class="btn primary" type="submit"'+(sync.client?'':' disabled')+'>تسجيل الدخول</button>'+(c.fixed?'':'<button class="btn ghost" type="button" data-act="sync-edit-config">تغيير المشروع</button>')+'</div>'+
+      '</form>';
+  }else{
+    const email = sync.session.user && sync.session.user.email;
+    body = '<p class="small">البيانات تتزامن تلقائيًا بين أجهزتك المسجّلة بهذا الحساب'+(email?': <b class="ltr">'+esc(email)+'</b>':'')+'.</p>'+
+      '<div class="row"><button class="btn primary" type="button" data-act="sync-now">مزامنة الآن</button><button class="btn" type="button" data-act="sync-logout">تسجيل الخروج</button></div>';
+  }
+  return '<section class="panel set"><h2>المزامنة بين الأجهزة</h2>'+body+'<p class="small muted" id="sync-status" style="margin:0">'+syncStatusHtml()+'</p></section>';
+}
+
+render();
+remindOnOpen();
+initSync();
+</script>
+</body>
+</html>
