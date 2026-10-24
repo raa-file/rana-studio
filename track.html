@@ -92,6 +92,8 @@ h2{font-size:16px;margin:0 0 10px}
 'use strict';
 /* Client-facing order tracker. The link carries: #<share token>~<supabase project ref>~<public anon key>.
    It calls a single read-only database function that returns one order's public fields only. */
+const SUPABASE_URL = 'https://rgqyldvplmtqcfbkdegj.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJncXlsZHZwbG10cWNmYmtkZWdqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI4NzE2NTEsImV4cCI6MjEwODQ0NzY1MX0.0hKbPLYzZt1McgqM6a9K-4-bbe8UbvO1XY8w0uc8RU4';
 const STEPS = [
   {key:'new', label:'استلام الطلب'},
   {key:'progress', label:'العمل على التصميم'},
@@ -121,7 +123,8 @@ const app = document.getElementById('app');
 
 function parseLink(){
   const parts = location.hash.replace(/^#/,'').split('~');
-  if(parts.length < 3 || parts[0].length < 20) return null;
+  if(parts[0].length < 20) return null;
+  if(parts.length < 3) return SUPABASE_URL && SUPABASE_ANON_KEY ? {token: parts[0], url: SUPABASE_URL, key: SUPABASE_ANON_KEY} : null;
   const where = decodeURIComponent(parts[1]);
   const url = where.startsWith('u:') ? decodeURIComponent(where.slice(2)) : 'https://' + where + '.supabase.co';
   if(!/^https:\/\/[^/\s]+$/.test(url)) return null;
